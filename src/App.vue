@@ -1,5 +1,6 @@
 <template>
   <the-header></the-header>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -36,5 +37,7 @@ export default {
   background: linear-gradient(180deg, rgb(32, 88, 145), rgb(8, 39, 67));
   min-height: 100vh;
   width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 }
 </style>

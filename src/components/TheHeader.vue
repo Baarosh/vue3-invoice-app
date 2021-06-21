@@ -1,5 +1,5 @@
 <template>
-  <header class="flex row a-center">
+  <header class="header flex row">
     <div class="left flex row a-center j-start">
       <img src="../assets/background_invoice.svg" alt="" />
       <h1>Invoice Manager</h1>
@@ -34,9 +34,10 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-header {
+.header {
   height: 120px;
   width: 100%;
+
   .left {
     position: relative;
     flex: 1 0 auto;
@@ -67,6 +68,7 @@ header {
   .right {
     flex: 1 0 auto;
     height: 100%;
+
     h4 {
       display: inline-block;
       margin-right: 30px;
@@ -75,8 +77,5 @@ header {
       color: $white;
     }
   }
-}
-
-svg {
 }
 </style>
