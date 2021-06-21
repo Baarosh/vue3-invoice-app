@@ -1,0 +1,47 @@
+$white: #ffffff;
+$dark-gray: #858585;
+$green: #11ef5c;
+$dark-blue: #082743;
+$dark-blue2: #205891;
+$orange: #ffa724;
+$gray: #dbcec8;
+$blue: #1b5792;
+$red: #f43838;
+
+.flex {
+  display: flex;
+}
+
+.row {
+  flex-flow: row nowrap;
+}
+
+.column {
+  flex-flow: column nowrap;
+}
+
+.a-center {
+  align-items: center;
+}
+.a-start {
+  align-items: flex-start;
+}
+.a-end {
+  align-items: flex-end;
+}
+
+.j-center {
+  justify-content: center;
+}
+.j-start {
+  justify-content: flex-start;
+}
+.j-end {
+  justify-content: flex-end;
+}
+.j-space-between {
+  justify-content: space-between;
+}
+.j-space-around {
+  justify-content: space-around;
+}
