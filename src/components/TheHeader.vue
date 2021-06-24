@@ -4,6 +4,7 @@
       <img src="../assets/background_invoice.svg" alt="" />
       <h1>Invoice Manager</h1>
       <svg
+        class="line-svg"
         width="232"
         height="39"
         viewBox="0 0 232 39"
@@ -58,7 +59,7 @@ export default {
       color: $white;
     }
 
-    svg {
+    .line-svg {
       position: absolute;
       top: 85px;
       left: 320px;
