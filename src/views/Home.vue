@@ -1,9 +1,9 @@
 <template>
   <section class="section1 flex row a-start j-start">
-    <div class="left flex a-start j-start">
+    <div class="left flex a-center j-start">
       <h3>There are 5 invoices in your inventory.</h3>
     </div>
-    <div class="right flex a-start j-end">
+    <div class="right flex a-center j-end">
       <p>Filter by:</p>
       <!-- <p>Country</p>
       <p>Status</p> -->
@@ -59,10 +59,11 @@ export default {
     flex: 4 0 auto;
     p {
       color: $white;
-      font-size: 20px;
-      font-weight: normal;
+      font-size: 18px;
       margin-left: 100px;
       white-space: nowrap;
+      font-weight: 200;
+      letter-spacing: 0px;
     }
 
     select {
@@ -76,7 +77,11 @@ export default {
       border-radius: 5px;
       box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
         rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+      font-weight: 200;
+      letter-spacing: 0px;
       option {
+        font-weight: 200;
+        letter-spacing: 0px;
       }
     }
   }
