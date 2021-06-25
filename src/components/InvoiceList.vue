@@ -120,7 +120,7 @@ export default {
   name: 'InvoiceList',
   data() {
     return {
-      sortingBy: null,
+      sortingBy: 'Date',
       rotate: null,
     };
   },
@@ -243,6 +243,10 @@ export default {
       .fade-enter-to,
       .fade-leave-from {
         opacity: 1;
+      }
+
+      p {
+        cursor: pointer;
       }
 
       span {
