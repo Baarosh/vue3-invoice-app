@@ -5,21 +5,19 @@
     </div>
     <div class="right flex a-center j-end">
       <p>Filter by:</p>
-      <!-- <p>Country</p>
-      <p>Status</p> -->
 
-      <select id="country-filter">
-        <option value="country" selected>*Country*</option>
-        <option value="france">France</option>
-        <option value="poland">Poland</option>
-        <option value="spain">Spain</option>
+      <select id="country-filter" @change="setFilterCountry">
+        <option value="Country" selected>*Country*</option>
+        <option value="France">France</option>
+        <option value="Poland">Poland</option>
+        <option value="Spain">Spain</option>
       </select>
 
-      <select id="status-filter">
-        <option value="status" selected>*Status*</option>
-        <option value="draft">Draft</option>
-        <option value="paid">Paid</option>
-        <option value="pending">Pending</option>
+      <select id="status-filter" @change="setFilterStatus">
+        <option value="Status" selected>*Status*</option>
+        <option value="Draft">Draft</option>
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
       </select>
     </div>
   </section>
@@ -33,6 +31,22 @@ export default {
   name: 'Home',
   components: {
     InvoiceList,
+  },
+  data() {
+    return {
+      filterCountry: null,
+      filterStatus: null,
+    };
+  },
+  methods: {
+    setFilterCountry(event) {
+      this.filterCountry = event.target.value;
+      this.$store.dispatch('SET_FILTER_COUNTRY', this.filterCountry);
+    },
+    setFilterStatus(event) {
+      this.filterStatus = event.target.value;
+      this.$store.dispatch('SET_FILTER_STATUS', this.filterStatus);
+    },
   },
 };
 </script>

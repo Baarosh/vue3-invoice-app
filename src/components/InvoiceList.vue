@@ -2,54 +2,71 @@
   <section class="section2 flex column a-start j-start">
     <ul class="flex column a-start j-start">
       <li class="li-header flex row">
-        <p @click="setSorting('Invoice Id')">
+        <p @click="setSorting('invoiceId')">
           Invoice Id
           <transition name="fade">
             <span
-              :class="{ 'span-turned': rotate === 'Invoice Id' }"
-              v-if="sortingBy === 'Invoice Id'"
+              :class="{
+                'span-turned': sortingAttribute === 'invoiceId' && sortingOrder === 'dsc',
+              }"
+              v-if="sortingAttribute === 'invoiceId'"
             >
               v</span
             ></transition
           >
           <span class="p-line"></span>
         </p>
-        <p @click="setSorting('Date')">
+        <p @click="setSorting('date')">
           Date
           <transition name="fade">
-            <span :class="{ 'span-turned': rotate === 'Date' }" v-if="sortingBy === 'Date'">
+            <span
+              :class="{ 'span-turned': sortingAttribute === 'date' && sortingOrder === 'dsc' }"
+              v-if="sortingAttribute === 'date'"
+            >
               v</span
             ></transition
           >
         </p>
-        <p @click="setSorting('Country')">
+        <p @click="setSorting('country')">
           Country
           <transition name="fade">
-            <span :class="{ 'span-turned': rotate === 'Country' }" v-if="sortingBy === 'Country'">
+            <span
+              :class="{ 'span-turned': sortingAttribute === 'country' && sortingOrder === 'dsc' }"
+              v-if="sortingAttribute === 'country'"
+            >
               v</span
             ></transition
           >
         </p>
-        <p @click="setSorting('Zip Code')">
+        <p @click="setSorting('zipCode')">
           Zip Code
           <transition name="fade">
-            <span :class="{ 'span-turned': rotate === 'Zip Code' }" v-if="sortingBy === 'Zip Code'">
+            <span
+              :class="{ 'span-turned': sortingAttribute === 'zipCode' && sortingOrder === 'dsc' }"
+              v-if="sortingAttribute === 'zipCode'"
+            >
               v</span
             ></transition
           >
         </p>
-        <p @click="setSorting('Total')">
+        <p @click="setSorting('total')">
           Total
           <transition name="fade">
-            <span :class="{ 'span-turned': rotate === 'Total' }" v-if="sortingBy === 'Total'">
+            <span
+              :class="{ 'span-turned': sortingAttribute === 'total' && sortingOrder === 'dsc' }"
+              v-if="sortingAttribute === 'total'"
+            >
               v</span
             ></transition
           >
         </p>
-        <p @click="setSorting('Status')">
+        <p @click="setSorting('status')">
           Status
           <transition name="fade">
-            <span :class="{ 'span-turned': rotate === 'Status' }" v-if="sortingBy === 'Status'">
+            <span
+              :class="{ 'span-turned': sortingAttribute === 'status' && sortingOrder === 'dsc' }"
+              v-if="sortingAttribute === 'status'"
+            >
               v</span
             ></transition
           >
@@ -87,29 +104,23 @@
           </g>
         </svg>
       </li>
-      <li class="li-cell flex row">
-        <p>#54203</p>
-        <p>24.05.2021</p>
-        <p>France</p>
-        <p>55-334</p>
-        <p>$ 13,34</p>
-        <p><span class="p-dot orange"></span>Pending</p>
-      </li>
-      <li class="li-cell flex row">
-        <p>#74323</p>
-        <p>15.06.2021</p>
-        <p>Poland</p>
-        <p>61-210</p>
-        <p>$ 643,99</p>
-        <p><span class="p-dot gray"></span>Draft</p>
-      </li>
-      <li class="li-cell flex row">
-        <p>#89942</p>
-        <p>01.12.2021</p>
-        <p>Spain</p>
-        <p>12-331</p>
-        <p>$ 6435,59</p>
-        <p><span class="p-dot green"></span>Paid</p>
+      <li v-for="invoice in INVOICES_FILTERED" :key="invoice.invoiceId" class="li-cell flex row">
+        <p>{{ invoice.invoiceId }}</p>
+        <p>{{ invoice.date }}</p>
+        <p>{{ invoice.country }}</p>
+        <p>{{ invoice.zipCode }}</p>
+        <p>$ {{ invoice.total }}</p>
+        <p>
+          <span
+            class="p-dot"
+            :class="{
+              orange: invoice.status === 'Pending',
+              green: invoice.status === 'Paid',
+              gray: invoice.status === 'Draft',
+            }"
+          ></span
+          >{{ invoice.status }}
+        </p>
       </li>
     </ul>
   </section>
@@ -118,21 +129,31 @@
 <script>
 export default {
   name: 'InvoiceList',
+  components: {},
   data() {
     return {
-      sortingBy: 'Date',
-      rotate: null,
+      sortingAttribute: 'date',
+      sortingOrder: 'asc',
     };
+  },
+  computed: {
+    INVOICES_FILTERED() {
+      return this.$store.getters.INVOICES_FILTERED;
+    },
   },
   methods: {
     setSorting(attribute) {
-      if (this.sortingBy !== attribute) {
-        this.sortingBy = attribute;
-        this.rotate = null;
-      } else if (this.rotate !== attribute) {
-        this.rotate = attribute;
+      if (this.sortingAttribute !== attribute) {
+        this.sortingAttribute = attribute;
+        this.$store.dispatch('SET_SORTING_ATTRIBUTE', this.sortingAttribute);
+        this.sortingOrder = 'asc';
+        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
+      } else if (this.sortingOrder === 'asc') {
+        this.sortingOrder = 'dsc';
+        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       } else {
-        this.rotate = null;
+        this.sortingOrder = 'asc';
+        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       }
     },
   },
@@ -143,18 +164,35 @@ export default {
 @import '../variables.scss';
 
 .section2 {
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: 150px;
   width: 75%;
+  height: 580px;
 
   ul {
+    padding-top: 10px;
+    padding-right: 10px;
     width: 100%;
     list-style: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: $dark-blue;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $dark-gray;
+    }
 
     li {
       width: 100%;
       padding-left: 20px;
-
       p {
         flex: 1 0 100px;
         margin-left: 50px;
