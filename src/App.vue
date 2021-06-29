@@ -1,15 +1,23 @@
 <template>
   <the-header></the-header>
   <router-view></router-view>
+  <add-invoice v-if="MODAL"></add-invoice>
 </template>
 
 <script>
 import TheHeader from './components/TheHeader.vue';
+import AddInvoice from './components/AddInvoice.vue';
 
 export default {
   name: 'App',
   components: {
     TheHeader,
+    AddInvoice,
+  },
+  computed: {
+    MODAL() {
+      return this.$store.getters.MODAL;
+    },
   },
 };
 </script>
@@ -39,5 +47,6 @@ export default {
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
 }
 </style>

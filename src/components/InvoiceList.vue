@@ -174,6 +174,7 @@
           ></transition>
         </p>
         <svg
+          @click="TOGGLE_MODAL"
           class="svg-addinvoice"
           width="29"
           height="28"
@@ -207,7 +208,7 @@
         </svg>
       </li>
       <li v-for="invoice in INVOICES_FILTERED" :key="invoice.invoiceId" class="li-cell flex row">
-        <p>{{ invoice.invoiceId }}</p>
+        <p>#{{ invoice.invoiceId }}</p>
         <p>{{ invoice.date }}</p>
         <p>{{ invoice.country }}</p>
         <p>{{ invoice.zipCode }}</p>
@@ -244,6 +245,9 @@ export default {
     },
   },
   methods: {
+    TOGGLE_MODAL() {
+      this.$store.dispatch('TOGGLE_MODAL');
+    },
     setSorting(attribute) {
       if (this.sortingAttribute !== attribute) {
         this.sortingAttribute = attribute;

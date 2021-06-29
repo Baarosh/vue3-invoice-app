@@ -76,6 +76,7 @@ export default {
       font-size: 25px;
       font-weight: bold;
       color: $white;
+      cursor: pointer;
     }
   }
 }

@@ -4,7 +4,7 @@ export default createStore({
   state: {
     INVOICES: [
       {
-        invoiceId: 1,
+        invoiceId: 4321,
         date: '08.03.2021',
         country: 'Poland',
         zipCode: '52-421',
@@ -12,7 +12,7 @@ export default createStore({
         status: 'Pending',
       },
       {
-        invoiceId: 2,
+        invoiceId: 4322,
         date: '05.03.2021',
         country: 'France',
         zipCode: '72-421',
@@ -20,7 +20,7 @@ export default createStore({
         status: 'Paid',
       },
       {
-        invoiceId: 3,
+        invoiceId: 4323,
         date: '15.03.2021',
         country: 'Spain',
         zipCode: '12-421',
@@ -28,7 +28,7 @@ export default createStore({
         status: 'Pending',
       },
       {
-        invoiceId: 4,
+        invoiceId: 4324,
         date: '22.03.2021',
         country: 'Poland',
         zipCode: '32-421',
@@ -40,6 +40,7 @@ export default createStore({
     FILTER_STATUS: 'Status',
     SORTING_ATTRIBUTE: 'date',
     SORTING_ORDER: 'asc',
+    TOGGLE_MODAL: false,
   },
   getters: {
     INVOICES_FILTERED(state, getters) {
@@ -58,7 +59,6 @@ export default createStore({
       }
       return invoicesSorted;
     },
-
     INVOICES_SORTED(state) {
       if (state.SORTING_ORDER === 'asc') {
         if (state.SORTING_ATTRIBUTE === 'invoiceId') {
@@ -144,6 +144,9 @@ export default createStore({
       }
       return state.INVOICES;
     },
+    MODAL(state) {
+      return state.TOGGLE_MODAL;
+    },
   },
   mutations: {
     SET_FILTER_COUNTRY(state, payload) {
@@ -158,6 +161,9 @@ export default createStore({
     SET_SORTING_ORDER(state, payload) {
       state.SORTING_ORDER = payload;
     },
+    TOGGLE_MODAL(state) {
+      state.TOGGLE_MODAL = !state.TOGGLE_MODAL;
+    },
   },
   actions: {
     SET_FILTER_COUNTRY(context, payload) {
@@ -171,6 +177,9 @@ export default createStore({
     },
     SET_SORTING_ORDER(context, payload) {
       context.commit('SET_SORTING_ORDER', payload);
+    },
+    TOGGLE_MODAL(context) {
+      context.commit('TOGGLE_MODAL');
     },
   },
   modules: {},
