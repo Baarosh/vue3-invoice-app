@@ -6,70 +6,172 @@
           Invoice Id
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{
                 'span-turned': sortingAttribute === 'invoiceId' && sortingOrder === 'dsc',
               }"
               v-if="sortingAttribute === 'invoiceId'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
           <span class="p-line"></span>
         </p>
         <p @click="setSorting('date')">
           Date
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{ 'span-turned': sortingAttribute === 'date' && sortingOrder === 'dsc' }"
               v-if="sortingAttribute === 'date'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
         </p>
         <p @click="setSorting('country')">
           Country
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{ 'span-turned': sortingAttribute === 'country' && sortingOrder === 'dsc' }"
               v-if="sortingAttribute === 'country'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
         </p>
         <p @click="setSorting('zipCode')">
           Zip Code
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{ 'span-turned': sortingAttribute === 'zipCode' && sortingOrder === 'dsc' }"
               v-if="sortingAttribute === 'zipCode'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
         </p>
         <p @click="setSorting('total')">
           Total
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{ 'span-turned': sortingAttribute === 'total' && sortingOrder === 'dsc' }"
               v-if="sortingAttribute === 'total'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
         </p>
         <p @click="setSorting('status')">
           Status
           <transition name="fade">
             <span
+              class="p-sort"
               :class="{ 'span-turned': sortingAttribute === 'status' && sortingOrder === 'dsc' }"
               v-if="sortingAttribute === 'status'"
             >
-              v</span
-            ></transition
-          >
+              <svg
+                class="svg-sortinvoice"
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="arrow 1">
+                  <g id="a0">
+                    <path
+                      id="Vector"
+                      d="M396.6 160L416 180.7L256 352L96 180.7L115.3 160L256 310.5L396.6 160Z"
+                      fill="#858585"
+                    />
+                  </g>
+                </g>
+              </svg> </span
+          ></transition>
         </p>
         <svg
           class="svg-addinvoice"
@@ -285,6 +387,10 @@ export default {
 
       p {
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-flow: row nowrap;
       }
 
       span {
@@ -294,7 +400,17 @@ export default {
       }
 
       .span-turned {
+        transform-origin: center;
         transform: rotate(180deg);
+      }
+
+      .p-sort {
+        height: 25px;
+      }
+
+      .svg-sortinvoice {
+        width: auto;
+        height: 100%;
       }
     }
   }

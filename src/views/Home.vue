@@ -1,7 +1,9 @@
 <template>
   <section class="section1 flex row a-start j-start">
     <div class="left flex a-center j-start">
-      <h3>There are 5 invoices in your inventory.</h3>
+      <h3>
+        There are <span>{{ INVOICES_FILTERED.length }}</span> invoices in your inventory.
+      </h3>
     </div>
     <div class="right flex a-center j-end">
       <p>Filter by:</p>
@@ -38,6 +40,11 @@ export default {
       filterStatus: null,
     };
   },
+  computed: {
+    INVOICES_FILTERED() {
+      return this.$store.getters.INVOICES_FILTERED;
+    },
+  },
   methods: {
     setFilterCountry(event) {
       this.filterCountry = event.target.value;
@@ -66,6 +73,12 @@ export default {
       color: $white;
       font-size: 20px;
       font-weight: normal;
+
+      span {
+        color: $green;
+        font-size: 20px;
+        font-weight: normal;
+      }
     }
   }
 
