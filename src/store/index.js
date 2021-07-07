@@ -167,6 +167,9 @@ export default createStore({
     TOGGLE_MODAL_OFF(state) {
       state.MODAL_ON = false;
     },
+    ADD_INVOICE(state, payload) {
+      state.INVOICES.push(payload);
+    },
   },
   actions: {
     SET_FILTER_COUNTRY(context, payload) {
@@ -186,6 +189,9 @@ export default createStore({
     },
     TOGGLE_MODAL_OFF(context) {
       context.commit('TOGGLE_MODAL_OFF');
+    },
+    ADD_INVOICE(context, payload) {
+      context.commit('ADD_INVOICE', payload);
     },
   },
   modules: {},

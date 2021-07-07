@@ -1,7 +1,9 @@
 <template>
   <the-header></the-header>
   <router-view></router-view>
-  <add-invoice v-if="MODAL"></add-invoice>
+  <transition name="modal">
+    <add-invoice v-if="MODAL"></add-invoice>
+  </transition>
 </template>
 
 <script>
@@ -48,5 +50,19 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: transform 0.3s ease-in-out;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  transform: translateX(-800px);
+}
+
+.modal-enter-to,
+.modal-leave-from {
+  transform: translateX(0px);
 }
 </style>
