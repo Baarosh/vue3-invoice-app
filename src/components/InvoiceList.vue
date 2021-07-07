@@ -174,7 +174,7 @@
           ></transition>
         </p>
         <svg
-          @click="TOGGLE_MODAL"
+          @click="TOGGLE_MODAL_ON"
           class="svg-addinvoice"
           width="29"
           height="28"
@@ -245,8 +245,8 @@ export default {
     },
   },
   methods: {
-    TOGGLE_MODAL() {
-      this.$store.dispatch('TOGGLE_MODAL');
+    TOGGLE_MODAL_ON() {
+      this.$store.dispatch('TOGGLE_MODAL_ON');
     },
     setSorting(attribute) {
       if (this.sortingAttribute !== attribute) {

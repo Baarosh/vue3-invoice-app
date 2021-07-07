@@ -40,7 +40,7 @@ export default createStore({
     FILTER_STATUS: 'Status',
     SORTING_ATTRIBUTE: 'date',
     SORTING_ORDER: 'asc',
-    TOGGLE_MODAL: false,
+    MODAL_ON: false,
   },
   getters: {
     INVOICES_FILTERED(state, getters) {
@@ -145,7 +145,7 @@ export default createStore({
       return state.INVOICES;
     },
     MODAL(state) {
-      return state.TOGGLE_MODAL;
+      return state.MODAL_ON;
     },
   },
   mutations: {
@@ -161,8 +161,11 @@ export default createStore({
     SET_SORTING_ORDER(state, payload) {
       state.SORTING_ORDER = payload;
     },
-    TOGGLE_MODAL(state) {
-      state.TOGGLE_MODAL = !state.TOGGLE_MODAL;
+    TOGGLE_MODAL_ON(state) {
+      state.MODAL_ON = true;
+    },
+    TOGGLE_MODAL_OFF(state) {
+      state.MODAL_ON = false;
     },
   },
   actions: {
@@ -178,8 +181,11 @@ export default createStore({
     SET_SORTING_ORDER(context, payload) {
       context.commit('SET_SORTING_ORDER', payload);
     },
-    TOGGLE_MODAL(context) {
-      context.commit('TOGGLE_MODAL');
+    TOGGLE_MODAL_ON(context) {
+      context.commit('TOGGLE_MODAL_ON');
+    },
+    TOGGLE_MODAL_OFF(context) {
+      context.commit('TOGGLE_MODAL_OFF');
     },
   },
   modules: {},
