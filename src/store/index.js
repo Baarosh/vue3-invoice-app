@@ -185,10 +185,14 @@ export default createStore({
       context.commit('SET_SORTING_ORDER', payload);
     },
     TOGGLE_MODAL_ON(context) {
-      context.commit('TOGGLE_MODAL_ON');
+      setTimeout(() => {
+        context.commit('TOGGLE_MODAL_ON');
+      }, 100);
     },
     TOGGLE_MODAL_OFF(context) {
-      context.commit('TOGGLE_MODAL_OFF');
+      setTimeout(() => {
+        context.commit('TOGGLE_MODAL_OFF');
+      }, 100);
     },
     ADD_INVOICE(context, payload) {
       context.commit('ADD_INVOICE', payload);

@@ -53,7 +53,7 @@ export default {
 }
 .modal-enter-active,
 .modal-leave-active {
-  transition: transform 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .modal-enter-from,

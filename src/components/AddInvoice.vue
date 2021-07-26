@@ -1,5 +1,5 @@
 <template>
-  <div class="section3-wrapper" @click="toggleModalOff" ref="wrapper">
+  <div class="section3-wrapper" :class="{ toggleDialog }" @click="toggleModalOff" ref="wrapper">
     <section class="section3 flex column a-center j-center">
       <form class="flex column a-start j-start">
         <h2>New Invoice</h2>
@@ -47,6 +47,18 @@
         </div>
       </form>
     </section>
+    <div v-if="toggleDialog" class="leave-confirm-wrapper">
+      <div class="leave-confirm" :class="{ toggleDialog }">
+        <h3>
+          Do you want to abandon the form? <br />
+          Invoice will not be saved.
+        </h3>
+        <div>
+          <button type="button" class="btn btn-leave" @click="leaveNewInvoice">Yes</button>
+          <button type="button" class="btn btn-stay" @click="backToInvoice">No</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -59,19 +71,33 @@ export default {
       countryValid: null,
       zipCodeValid: null,
       totalValid: null,
+      toggleDialog: false,
+      grayedOut: false,
     };
   },
   methods: {
     TOGGLE_MODAL_OFF() {
-      this.$store.dispatch('TOGGLE_MODAL_OFF');
+      this.toggleDialog = true;
     },
     toggleModalOff(event) {
       if (event.target === this.$refs.wrapper) {
-        this.$store.dispatch('TOGGLE_MODAL_OFF');
+        this.toggleDialog = true;
       }
     },
+    leaveNewInvoice() {
+      this.toggleDialog = false;
+      this.$store.dispatch('TOGGLE_MODAL_OFF');
+    },
+    backToInvoice() {
+      this.toggleDialog = false;
+    },
     ADD_INVOICE(status) {
-      if (true) {
+      this.validateAttribute('date');
+      this.validateAttribute('country');
+      this.validateAttribute('zipCode');
+      this.validateAttribute('total');
+
+      if (this.validateForm()) {
         const d = new Date(this.$refs.date.value);
         // placeholder for validation process
         this.$store.dispatch('ADD_INVOICE', {
@@ -234,5 +260,72 @@ export default {
       }
     }
   }
+}
+
+.leave-confirm-wrapper {
+  z-index: 9999;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  .leave-confirm {
+    z-index: 9999;
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: -webkit-linear-gradient(180deg, rgb(32, 88, 145), rgb(8, 39, 67));
+    background: linear-gradient(180deg, rgb(32, 88, 145), rgb(8, 39, 67));
+    border: 2px solid $white;
+    border-radius: 5px;
+  }
+
+  h3 {
+    font-size: 24px;
+    color: $white;
+    text-align: center;
+  }
+
+  div {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-around;
+    width: 80%;
+
+    .btn {
+      padding: 5px 20px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 100px;
+      font-size: 16px;
+      color: $white;
+      transition: background-color 0.2s ease-out;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .btn-leave {
+      background-color: $red;
+      &:hover {
+        background-color: $red-hover;
+      }
+    }
+    .btn-stay {
+      background-color: $dark-gray;
+      &:hover {
+        background-color: $dark-gray-hover;
+      }
+    }
+  }
+}
+
+.toggleDialog {
+  background: $black-transparent;
 }
 </style>
