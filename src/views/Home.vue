@@ -2,7 +2,10 @@
   <section class="section1 flex row a-start j-start">
     <div class="left flex a-center j-start">
       <h3>
-        There are <span>{{ INVOICES_FILTERED.length }}</span> invoices in your inventory.
+        There are <span>{{ INVOICES_FILTERED.length }}</span> invoices in your inventory. <br />
+        <span v-if="filterCountry !== 'Country' || filterStatus !== 'Status'"
+          >Filters applied.</span
+        >
       </h3>
     </div>
     <div class="right flex a-center j-end">
@@ -36,8 +39,8 @@ export default {
   },
   data() {
     return {
-      filterCountry: null,
-      filterStatus: null,
+      filterCountry: 'Country',
+      filterStatus: 'Status',
     };
   },
   computed: {
