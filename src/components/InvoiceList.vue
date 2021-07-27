@@ -207,7 +207,12 @@
           </g>
         </svg>
       </li>
-      <li v-for="invoice in INVOICES_FILTERED" :key="invoice.invoiceId" class="li-cell flex row">
+      <li
+        v-for="invoice in INVOICES_FILTERED"
+        :key="invoice.invoiceId"
+        class="li-cell flex row"
+        @click="pushToDetails(invoice.invoiceId)"
+      >
         <p>#{{ invoice.invoiceId }}</p>
         <p>{{ invoice.date }}</p>
         <p>{{ invoice.country }}</p>
@@ -261,6 +266,9 @@ export default {
         this.sortingOrder = 'asc';
         this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       }
+    },
+    pushToDetails(invoiceId) {
+      this.$router.push({ name: 'InvoiceDetails', params: { id: invoiceId } });
     },
   },
 };
@@ -317,7 +325,7 @@ export default {
       border-radius: 10px;
       background-color: $blue;
       margin-bottom: 10px;
-
+      cursor: pointer;
       p {
         position: relative;
 

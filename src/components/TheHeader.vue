@@ -1,5 +1,5 @@
 <template>
-  <header class="header flex row">
+  <header class="header flex row" @click="backHome">
     <div class="left flex row a-center j-start">
       <img src="../assets/background_invoice.svg" alt="" />
       <h1>Invoice Manager</h1>
@@ -29,6 +29,11 @@
 <script>
 export default {
   name: 'TheHeader',
+  methods: {
+    backHome() {
+      this.$router.push({ name: 'Home' });
+    },
+  },
 };
 </script>
 
@@ -38,7 +43,7 @@ export default {
 .header {
   height: 120px;
   width: 100%;
-
+  cursor: pointer;
   .left {
     position: relative;
     flex: 1 0 auto;

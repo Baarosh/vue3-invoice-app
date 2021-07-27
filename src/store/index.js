@@ -41,6 +41,7 @@ export default createStore({
     SORTING_ATTRIBUTE: 'date',
     SORTING_ORDER: 'asc',
     MODAL_ON: false,
+    ACTIVE_INVOICE: null,
   },
   getters: {
     INVOICES_FILTERED(state, getters) {
@@ -147,6 +148,9 @@ export default createStore({
     MODAL(state) {
       return state.MODAL_ON;
     },
+    ACTIVE_INVOICE(state) {
+      return state.ACTIVE_INVOICE;
+    },
   },
   mutations: {
     SET_FILTER_COUNTRY(state, payload) {
@@ -169,6 +173,23 @@ export default createStore({
     },
     ADD_INVOICE(state, payload) {
       state.INVOICES.push(payload);
+    },
+    GET_INVOICE(state, payload) {
+      const foundInvoice = state.INVOICES.filter(
+        (invoice) => invoice.invoiceId === parseInt(payload, 10)
+      );
+      if (foundInvoice.length > 0) {
+        // eslint-disable-next-line prefer-destructuring
+        state.ACTIVE_INVOICE = foundInvoice[0];
+      }
+      return {
+        invoiceId: 0,
+        date: 'undefined',
+        country: 'undefined',
+        zipCode: 'undefined',
+        total: 0,
+        status: 'undefined',
+      };
     },
   },
   actions: {
@@ -196,6 +217,9 @@ export default createStore({
     },
     ADD_INVOICE(context, payload) {
       context.commit('ADD_INVOICE', payload);
+    },
+    GET_INVOICE(context, payload) {
+      context.commit('GET_INVOICE', payload);
     },
   },
   modules: {},
