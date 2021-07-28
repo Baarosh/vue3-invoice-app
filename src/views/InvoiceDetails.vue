@@ -1,13 +1,13 @@
 <template>
-  <section class="section4 flex column a-start j-start">
-    <div class="d1">
+  <section class="invoicedetails flex column a-start j-start">
+    <div class="invoicedetails__left">
       <h3>
         Invoice <span>#{{ ACTIVE_INVOICE.invoiceId }}</span>
       </h3>
       <h4>
         Status: {{ ACTIVE_INVOICE.status }}
         <span
-          class="p-dot1"
+          class="invoicedetails__left_status-dot1"
           :class="{
             orange: ACTIVE_INVOICE.status === 'Pending',
             green: ACTIVE_INVOICE.status === 'Paid',
@@ -19,16 +19,24 @@
       <h4>{{ ACTIVE_INVOICE.country }}</h4>
       <h4>{{ ACTIVE_INVOICE.zipCode }}</h4>
     </div>
-    <div class="d2">
-      <button type="button" class="btn btn-modify">Modify</button>
-      <button type="button" class="btn btn-back" @click="$router.push({ name: 'Home' })">
+    <div class="invoicedetails__right">
+      <button type="button" class="invoicedetails__right_btn invoicedetails__right_btn-modify">Modify</button>
+      <button
+        type="button"
+        class="invoicedetails__right_btn invoicedetails__right_btn-back"
+        @click="$router.push({ name: 'Home' })"
+      >
         Back
       </button>
     </div>
-    <button v-if="ACTIVE_INVOICE.status === 'Pending'" type="button" class="btn btn-pending">
+    <button
+      v-if="ACTIVE_INVOICE.status === 'Pending'"
+      type="button"
+      class="invoicedetails__right_btn invoicedetails__right_btn-pending"
+    >
       Set as paid
       <span
-        class="p-dot2"
+        class="invoicedetails__left_status-dot2"
         :class="{
           orange: ACTIVE_INVOICE.status === 'Paid',
           green: ACTIVE_INVOICE.status === 'Pending',
@@ -36,10 +44,10 @@
         }"
       ></span>
     </button>
-    <button v-else type="button" class="btn btn-paid">
+    <button v-else type="button" class="invoicedetails__right_btn invoicedetails__right_btn-paid">
       Set as pending
       <span
-        class="p-dot2"
+        class="invoicedetails__left_status-dot2"
         :class="{
           orange: ACTIVE_INVOICE.status === 'Paid',
           green: ACTIVE_INVOICE.status === 'Pending',
@@ -70,7 +78,7 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.section4 {
+.invoicedetails {
   min-width: 700px;
   width: 70%;
   height: 700px;
@@ -103,7 +111,7 @@ export default {
     position: relative;
     width: fit-content;
   }
-  .d2 {
+  .invoicedetails__right {
     align-self: flex-end;
     margin-top: 230px;
     width: 400px;
@@ -111,7 +119,8 @@ export default {
     flex-flow: row nowrap;
     justify-content: space-around;
     align-items: center;
-    .btn {
+
+    .invoicedetails__right_btn {
       border: none;
       border-radius: 10px;
       padding: 10px 50px;
@@ -124,14 +133,14 @@ export default {
       white-space: nowrap;
     }
 
-    .btn-back {
+    .invoicedetails__right_btn-back {
       background-color: $dark-gray;
       margin-right: 10px;
       &:hover {
         background-color: $dark-gray-hover;
       }
     }
-    .btn-modify {
+    .invoicedetails__right_btn-modify {
       background-color: $blue;
       &:hover {
         background-color: $blue-hover;
@@ -139,8 +148,8 @@ export default {
     }
   }
 
-  .btn-pending,
-  .btn-paid {
+  .invoicedetails__right_btn-pending,
+  .invoicedetails__right_btn-paid {
     position: absolute;
     right: 50px;
     top: 40px;
@@ -158,10 +167,10 @@ export default {
     }
     white-space: nowrap;
   }
-  .button {
+  button {
     position: relative;
   }
-  .p-dot1 {
+  .invoicedetails__left_status-dot {
     position: absolute;
     right: -20px;
     top: 14px;
@@ -169,7 +178,7 @@ export default {
     width: 8px;
     height: 8px;
   }
-  .p-dot2 {
+  .invoicedetails__left_status-dot2 {
     position: absolute;
     right: 10px;
     top: 12px;

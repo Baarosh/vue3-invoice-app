@@ -1,19 +1,19 @@
 <template>
-  <section class="section2 flex column a-start j-start">
+  <section class="invoicelist flex column a-start j-start">
     <ul class="flex column a-start j-start">
-      <li class="li-header flex row">
-        <p @click="setSorting('invoiceId')">
+      <li class="invoicelist__header flex row">
+        <p @click="setSortingAttrs('invoiceId')">
           Invoice Id
           <transition name="fade">
             <span
-              class="p-sort"
+              class="invoicelist__header_sorticon"
               :class="{
                 'span-turned': sortingAttribute === 'invoiceId' && sortingOrder === 'dsc',
               }"
               v-if="sortingAttribute === 'invoiceId'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -29,20 +29,23 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
           <span class="p-line"></span>
         </p>
-        <p @click="setSorting('date')">
+        <p @click="setSortingAttrs('date')">
           Date
           <transition name="fade">
             <span
-              class="p-sort"
-              :class="{ 'span-turned': sortingAttribute === 'date' && sortingOrder === 'dsc' }"
+              class="invoicelist__header_sorticon"
+              :class="{
+                'span-turned': sortingAttribute === 'date' && sortingOrder === 'dsc',
+              }"
               v-if="sortingAttribute === 'date'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -58,19 +61,22 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
         </p>
-        <p @click="setSorting('country')">
+        <p @click="setSortingAttrs('country')">
           Country
           <transition name="fade">
             <span
-              class="p-sort"
-              :class="{ 'span-turned': sortingAttribute === 'country' && sortingOrder === 'dsc' }"
+              class="invoicelist__header_sorticon"
+              :class="{
+                'span-turned': sortingAttribute === 'country' && sortingOrder === 'dsc',
+              }"
               v-if="sortingAttribute === 'country'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -86,19 +92,22 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
         </p>
-        <p @click="setSorting('zipCode')">
+        <p @click="setSortingAttrs('zipCode')">
           Zip Code
           <transition name="fade">
             <span
-              class="p-sort"
-              :class="{ 'span-turned': sortingAttribute === 'zipCode' && sortingOrder === 'dsc' }"
+              class="invoicelist__header_sorticon"
+              :class="{
+                'span-turned': sortingAttribute === 'zipCode' && sortingOrder === 'dsc',
+              }"
               v-if="sortingAttribute === 'zipCode'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -114,19 +123,22 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
         </p>
-        <p @click="setSorting('total')">
+        <p @click="setSortingAttrs('total')">
           Total
           <transition name="fade">
             <span
-              class="p-sort"
-              :class="{ 'span-turned': sortingAttribute === 'total' && sortingOrder === 'dsc' }"
+              class="invoicelist__header_sorticon"
+              :class="{
+                'span-turned': sortingAttribute === 'total' && sortingOrder === 'dsc',
+              }"
               v-if="sortingAttribute === 'total'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -142,19 +154,22 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
         </p>
-        <p @click="setSorting('status')">
+        <p @click="setSortingAttrs('status')">
           Status
           <transition name="fade">
             <span
-              class="p-sort"
-              :class="{ 'span-turned': sortingAttribute === 'status' && sortingOrder === 'dsc' }"
+              class="invoicelist__header_sorticon"
+              :class="{
+                'span-turned': sortingAttribute === 'status' && sortingOrder === 'dsc',
+              }"
               v-if="sortingAttribute === 'status'"
             >
               <svg
-                class="svg-sortinvoice"
+                class="invoicelist__header_sorticon_svg"
                 width="512"
                 height="512"
                 viewBox="0 0 512 512"
@@ -170,12 +185,13 @@
                     />
                   </g>
                 </g>
-              </svg> </span
-          ></transition>
+              </svg>
+            </span>
+          </transition>
         </p>
         <svg
-          @click="TOGGLE_MODAL_ON"
-          class="svg-addinvoice"
+          @click="toggleModal"
+          class="invoicelist-addinvoice__svg"
           width="29"
           height="28"
           viewBox="0 0 29 28"
@@ -208,26 +224,26 @@
         </svg>
       </li>
       <li
-        v-for="invoice in INVOICES_FILTERED"
+        v-for="invoice in getInvoicesFiltered"
         :key="invoice.invoiceId"
-        class="li-cell flex row"
-        @click="pushToDetails(invoice.invoiceId)"
+        class="invoicelist__cell flex row"
+        @click="routeToDetails(invoice.invoiceId)"
       >
-        <p>#{{ invoice.invoiceId }}</p>
-        <p>{{ invoice.date }}</p>
-        <p>{{ invoice.country }}</p>
-        <p>{{ invoice.zipCode }}</p>
-        <p>$ {{ invoice.total }}</p>
+        <p>{{ invoice.invoiceId }}</p>
+        <p>{{ invoice.invoiceDate }}</p>
+        <p>{{ invoice.clientCountry }}</p>
+        <p>{{ invoice.clientZipCode }}</p>
+        <p>$ {{ invoice.invoiceTotal }}</p>
         <p>
           <span
-            class="p-dot"
+            class="invoicelist__cell_status-dot"
             :class="{
-              orange: invoice.status === 'Pending',
-              green: invoice.status === 'Paid',
-              gray: invoice.status === 'Draft',
+              orange: invoice.invoiceStatus === 'Pending',
+              green: invoice.invoiceStatus === 'Paid',
+              gray: invoice.invoiceStatus === 'Draft',
             }"
-          ></span
-          >{{ invoice.status }}
+          ></span>
+          {{ invoice.invoiceStatus }}
         </p>
       </li>
     </ul>
@@ -235,6 +251,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'InvoiceList',
   components: {},
@@ -245,30 +263,28 @@ export default {
     };
   },
   computed: {
-    INVOICES_FILTERED() {
-      return this.$store.getters.INVOICES_FILTERED;
-    },
+    ...mapGetters(['getInvoicesFiltered']),
   },
   methods: {
-    TOGGLE_MODAL_ON() {
-      this.$store.dispatch('TOGGLE_MODAL_ON');
-    },
-    setSorting(attribute) {
+    ...mapActions(['toggleModal', 'setSorting']),
+    setSortingAttrs(attribute) {
       if (this.sortingAttribute !== attribute) {
         this.sortingAttribute = attribute;
-        this.$store.dispatch('SET_SORTING_ATTRIBUTE', this.sortingAttribute);
         this.sortingOrder = 'asc';
-        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       } else if (this.sortingOrder === 'asc') {
         this.sortingOrder = 'dsc';
-        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       } else {
         this.sortingOrder = 'asc';
-        this.$store.dispatch('SET_SORTING_ORDER', this.sortingOrder);
       }
+      this.setSorting({ sortingAttribute: this.sortingAttribute, sortingOrder: this.sortingOrder });
     },
-    pushToDetails(invoiceId) {
-      this.$router.push({ name: 'InvoiceDetails', params: { id: invoiceId } });
+    routeToDetails(invoiceId) {
+      this.$router.push({
+        name: 'InvoiceDetails',
+        params: {
+          id: invoiceId,
+        },
+      });
     },
   },
 };
@@ -277,7 +293,7 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.section2 {
+.invoicelist {
   margin-top: 40px;
   margin-left: 150px;
   width: 75%;
@@ -290,7 +306,6 @@ export default {
     list-style: none;
     overflow-y: auto;
     overflow-x: hidden;
-
     &::-webkit-scrollbar {
       width: 5px;
     }
@@ -319,7 +334,7 @@ export default {
       }
     }
 
-    .li-cell {
+    .invoicelist__cell {
       padding-top: 20px;
       padding-bottom: 20px;
       border-radius: 10px;
@@ -329,7 +344,7 @@ export default {
       p {
         position: relative;
 
-        .p-dot {
+        .invoicelist__cell_status-dot {
           position: absolute;
           left: -15px;
           top: 8px;
@@ -349,7 +364,7 @@ export default {
       }
     }
 
-    .li-header {
+    .invoicelist__header {
       padding-bottom: 10px;
       margin-bottom: 20px;
       position: relative;
@@ -363,7 +378,7 @@ export default {
         border-bottom: 3px solid $gray;
       }
 
-      .svg-addinvoice {
+      .invoicelist-addinvoice__svg {
         position: absolute;
         right: 0;
         height: 100%;
@@ -416,11 +431,11 @@ export default {
         transform: rotate(180deg);
       }
 
-      .p-sort {
+      .invoicelist__header_sorticon {
         height: 25px;
       }
 
-      .svg-sortinvoice {
+      .invoicelist__header_sorticon_svg {
         width: auto;
         height: 100%;
       }

@@ -1,61 +1,165 @@
 <template>
-  <div class="section3-wrapper" :class="{ toggleDialog }" @click="toggleModalOff" ref="wrapper">
-    <section class="section3 flex column a-center j-center">
+  <div class="addinvoice__wrapper" :class="{ getDialog }" @click="toggleDialogByOutClick" ref="wrapper">
+    <section class="addinvoice flex column a-center j-center">
       <form class="flex column a-start j-start">
         <h2>New Invoice</h2>
         <div class="flex row a-center j-start">
-          <label for="invoiceId">Invoice Id</label>
-          <input type="text" id="invoiceId" disabled value="4325" ref="invoiceId" />
+          <label for="addinvoice__invoiceId">Invoice Id</label>
+          <input type="text" id="addinvoice__invoiceId" disabled v-model="invoice.invoiceId.value" />
         </div>
         <div class="flex row a-center j-start">
-          <label for="date">Date</label>
-          <input type="date" id="date" ref="date" @input="validateAttribute('date')" />
-          <p class="invalid" v-if="dateValid === 0">Value is invalid, please correct!</p>
-          <p class="valid" v-if="dateValid === 1">Value is valid!</p>
+          <label for="addinvoice__invoiceDate">Invoice Date</label>
+          <input type="date" id="addinvoice__invoiceDate" v-model="invoice.invoiceDate.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.invoiceDate.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.invoiceDate.valid === 1">Value is valid!</p>
         </div>
         <div class="flex row a-center j-start">
-          <label for="country">Country</label>
-          <select id="country" ref="country" @input="validateAttribute('country')">
+          <label for="addinvoice__clientName">Client Name</label>
+          <input type="text" id="addinvoice__clientName" v-model="invoice.clientName.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.clientName.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientName.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__clientEmail">Client Email</label>
+          <input type="email" id="addinvoice__clientEmail" v-model="invoice.clientEmail.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.clientEmail.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientEmail.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__clientStreetAddress">Client Street Address</label>
+          <input type="text" id="addinvoice__clientStreetAddress" v-model="invoice.clientStreetAddress.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.clientStreetAddress.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientStreetAddress.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__clientCity">Client City</label>
+          <input type="text" id="addinvoice__clientCity" v-model="invoice.clientCity.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.clientCity.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientCity.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__clientZipCode">Client Zip Code</label>
+          <input type="text" id="addinvoice__clientZipCode" v-model="invoice.clientZipCode.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.clientZipCode.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientZipCode.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__clientCountry">Client country</label>
+          <select id="addinvoice__clientCountry" v-model="invoice.clientCountry.value">
             <option value="Country" selected disabled>*Select country*</option>
             <option value="France">France</option>
             <option value="Poland">Poland</option>
             <option value="Spain">Spain</option>
           </select>
-          <p class="invalid" v-if="countryValid === 0">Value is invalid, please correct!</p>
-          <p class="valid" v-if="countryValid === 1">Value is valid!</p>
+          <p class="addinvoice__invalid-value" v-if="invoice.clientCountry.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientCountry.valid === 1">Value is valid!</p>
         </div>
         <div class="flex row a-center j-start">
-          <label for="zipCode">Zip Code</label>
-          <input type="text" id="zipCode" ref="zipCode" @input="validateAttribute('zipCode')" />
-          <p class="invalid" v-if="zipCodeValid === 0">Value is invalid, please correct!</p>
-          <p class="valid" v-if="zipCodeValid === 1">Value is valid!</p>
+          <label for="addinvoice__clientNote">Client Note</label>
+          <textarea id="addinvoice__clientNote" v-model="invoice.clientNote.value" cols="30" rows="10"></textarea>
+          <p class="addinvoice__invalid-value" v-if="invoice.clientNote.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.clientNote.valid === 1">Value is valid!</p>
         </div>
         <div class="flex row a-center j-start">
-          <label for="total">Total</label>
-          <input type="number" id="total" ref="total" @input="validateAttribute('total')" />
-          <p class="invalid" v-if="totalValid === 0">Value is invalid, please correct!</p>
-          <p class="valid" v-if="totalValid === 1">Value is valid!</p>
+          <label for="addinvoice__paymentTerms">Payment Terms</label>
+          <select id="addinvoice__paymentTerms" v-model="invoice.paymentTerms.value">
+            <option value="Country" selected disabled>*Select terms*</option>
+            <option value="Payment30">Payment in 30 days</option>
+            <option value="Payment60">Payment in 60 days</option>
+          </select>
+          <p class="addinvoice__invalid-value" v-if="invoice.paymentTerms.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.paymentTerms.valid === 1">Value is valid!</p>
         </div>
-        <div class="buttons flex row a-center j-start">
-          <button type="button" class="btn btn-cancel" @click="TOGGLE_MODAL_OFF">Cancel</button>
-          <button type="button" class="btn btn-draft" @click="createInvoice('Draft')">
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__paymentDueDate">Payment Due Date</label>
+          <input type="date" id="addinvoice__paymentDueDate" v-model="invoice.paymentDueDate.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.paymentDueDate.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.paymentDueDate.valid === 1">Value is valid!</p>
+        </div>
+        <div class="flex row a-center j-start">
+          <div v-for="item in invoice.invoiceItemList" :key="item.itemId" class="">
+            <label for="addinvoice__itemName">Item Name</label>
+            <input type="text" id="addinvoice__itemName" v-model="item.itemName.value" />
+            <p class="addinvoice__invalid-value" v-if="item.itemName.valid === 0">Value is invalid, please correct!</p>
+            <p class="addinvoice__valid-value" v-if="item.itemName.valid === 1">Value is valid!</p>
+
+            <label for="addinvoice__itemQuantity">Item Quantity</label>
+            <input type="number" id="addinvoice__itemQuantity" v-model="item.itemQuantity.value" />
+            <p class="addinvoice__invalid-value" v-if="item.itemQuantity.valid === 0">
+              Value is invalid, please correct!
+            </p>
+            <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
+
+            <label for="addinvoice__unitPrice">Unit Price</label>
+            <input type="text" id="addinvoice__UnitPrice" disabled v-model="item.unitPrice.value" />
+            <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">Value is invalid, please correct!</p>
+            <p class="addinvoice__valid-value" v-if="item.unitPrice.valid === 1">Value is valid!</p>
+
+            <label for="addinvoice__itemTotal">Item Total</label>
+            <input type="text" id="addinvoice__itemTotal" disabled v-model="item.itemTotal.value" />
+            <p class="addinvoice__invalid-value" v-if="item.itemTotal.valid === 0">Value is invalid, please correct!</p>
+            <p class="addinvoice__valid-value" v-if="item.itemTotal.valid === 1">Value is valid!</p>
+          </div>
+        </div>
+        <div class="flex row a-center j-start">
+          <label for="addinvoice__invoiceTotal">Total</label>
+          <input type="number" id="addinvoice__invoiceTotal" v-model="invoice.invoiceTotal.value" />
+          <p class="addinvoice__invalid-value" v-if="invoice.invoiceTotal.valid === 0">
+            Value is invalid, please correct!
+          </p>
+          <p class="addinvoice__valid-value" v-if="invoice.invoiceTotal.valid === 1">Value is valid!</p>
+        </div>
+        <div class="addinvoice__buttons flex row a-center j-start">
+          <button type="button" class="addinvoice__button_item addinvoice__button_item-cancel" @click="toggleModal">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="addinvoice__button_item addinvoice__button_item-draft"
+            @click="createInvoice('Draft')"
+          >
             Save as draft
           </button>
-          <button type="button" class="btn btn-create" @click="createInvoice('Pending')">
+          <button
+            type="button"
+            class="addinvoice__button_item addinvoice__button_item-create"
+            @click="createInvoice('Pending')"
+          >
             Create invoice
           </button>
         </div>
       </form>
     </section>
-    <div v-if="toggleDialog" class="leave-confirm-wrapper">
-      <div class="leave-confirm" :class="{ toggleDialog }">
-        <h3>
-          Do you want to abandon the form? <br />
-          Invoice will not be saved.
-        </h3>
+    <div v-if="getDialog" class="addinvoice__confirm_wrapper">
+      <div class="addinvoice__confirm" :class="{ getDialog }">
+        <h3>Do you want to abandon the form? <br />Invoice will not be saved.</h3>
         <div>
-          <button type="button" class="btn btn-leave" @click="leaveNewInvoice">Yes</button>
-          <button type="button" class="btn btn-stay" @click="backToInvoice">No</button>
+          <button type="button" class="addinvoice__button_item addinvoice__button_item-leave" @click="leaveNewInvoice">
+            Yes
+          </button>
+          <button type="button" class="addinvoice__button_item addinvoice__button_item-stay" @click="toggleDialog">
+            No
+          </button>
         </div>
       </div>
     </div>
@@ -63,55 +167,57 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
-  name: 'AddInvoice',
+  name: 'addinvoice__wrapper',
   data() {
     return {
-      dateValid: null,
-      countryValid: null,
-      zipCodeValid: null,
-      totalValid: null,
-      toggleDialog: false,
-      grayedOut: false,
+      invoice: {
+        invoiceId: { value: null, valid: null },
+        invoiceDate: { value: null, valid: null },
+        clientName: { value: null, valid: null },
+        clientEmail: { value: null, valid: null },
+        clientStreetAddress: { value: null, valid: null },
+        clientCity: { value: null, valid: null },
+        clientZipCode: { value: null, valid: null },
+        clientCountry: { value: null, valid: null },
+        clientNote: { value: null, valid: null },
+        paymentTerms: { value: null, valid: null },
+        paymentDueDate: { value: null, valid: null },
+        invoiceItemList: [
+          {
+            itemId: { value: 0, valid: null },
+            itemName: { value: 0, valid: null },
+            itemQuantity: { value: 0, valid: null },
+            unitPrice: { value: 0, valid: null },
+            itemTotal: { value: 0, valid: null },
+          },
+        ],
+        invoiceTotal: { value: 0, valid: null },
+        invoiceStatus: { value: null, valid: null },
+      },
+      grayBackground: false,
     };
   },
+  computed: {
+    ...mapGetters(['getDialog']),
+  },
   methods: {
-    TOGGLE_MODAL_OFF() {
-      this.toggleDialog = true;
-    },
-    toggleModalOff(event) {
+    ...mapActions(['toggleModal', 'toggleDialog', 'addInvoice']),
+    toggleDialogByOutClick(event) {
       if (event.target === this.$refs.wrapper) {
-        this.toggleDialog = true;
+        this.toggleDialog();
       }
     },
-    leaveNewInvoice() {
-      this.toggleDialog = false;
-      this.$store.dispatch('TOGGLE_MODAL_OFF');
+    leaveInvoice() {
+      this.toggleDialog();
+      this.toggleModal();
     },
-    backToInvoice() {
-      this.toggleDialog = false;
-    },
-    ADD_INVOICE(status) {
-      this.validateAttribute('date');
-      this.validateAttribute('country');
-      this.validateAttribute('zipCode');
-      this.validateAttribute('total');
-
+    addInvoice() {
       if (this.validateForm()) {
-        const d = new Date(this.$refs.date.value);
-        // placeholder for validation process
-        this.$store.dispatch('ADD_INVOICE', {
-          invoiceId: this.$refs.invoiceId.value,
-          date: `${`${`0${d.getDate()}`.slice(-2)}.${`0${d.getMonth() + 1}`.slice(
-            -2
-          )}.${d.getFullYear()}`}`,
-          // d.getDate()}.${d.getMonth()}.${d.getFullYear()}
-          country: this.$refs.country.value,
-          zipCode: this.$refs.zipCode.value,
-          total: this.$refs.total.value,
-          status,
-        });
-        this.$store.dispatch('TOGGLE_MODAL_OFF');
+        this.addInvoice({});
+        this.toggleModal();
       }
     },
     validateAttribute(attribute) {
@@ -156,7 +262,7 @@ export default {
       this.validateAttribute('zipCode');
       this.validateAttribute('total');
       if (this.validateForm()) {
-        this.ADD_INVOICE(status);
+        this.addInvoice(status);
       }
     },
   },
@@ -166,7 +272,7 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.section3-wrapper {
+.addinvoice__wrapper {
   position: absolute;
   left: 0;
   top: 0;
@@ -174,7 +280,7 @@ export default {
   height: 100%;
 }
 
-.section3 {
+.addinvoice {
   position: absolute;
   width: 700px;
   height: 700px;
@@ -225,7 +331,7 @@ export default {
       margin-top: 230px;
       width: 100%;
 
-      .btn {
+      .addinvoice__button_item {
         border: none;
         border-radius: 10px;
         padding: 10px 20px;
@@ -238,21 +344,21 @@ export default {
         white-space: nowrap;
       }
 
-      .btn-cancel {
+      .addinvoice__button_item-cancel {
         background-color: $red;
         margin-right: 230px;
         &:hover {
           background-color: $red-hover;
         }
       }
-      .btn-draft {
+      .addinvoice__button_item-draft {
         background-color: $dark-gray;
         margin-right: 10px;
         &:hover {
           background-color: $dark-gray-hover;
         }
       }
-      .btn-create {
+      .addinvoice__button_item-create {
         background-color: $blue;
         &:hover {
           background-color: $blue-hover;
@@ -262,14 +368,14 @@ export default {
   }
 }
 
-.leave-confirm-wrapper {
+.addinvoice__confirm_wrapper {
   z-index: 9999;
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  .leave-confirm {
+  .addinvoice__confirm {
     z-index: 9999;
     position: absolute;
     width: 600px;
@@ -296,7 +402,7 @@ export default {
     justify-content: space-around;
     width: 80%;
 
-    .btn {
+    .addinvoice__button_item {
       padding: 5px 20px;
       margin-bottom: 20px;
       border: none;
@@ -310,13 +416,13 @@ export default {
       }
     }
 
-    .btn-leave {
+    .addinvoice__button_item-leave {
       background-color: $red;
       &:hover {
         background-color: $red-hover;
       }
     }
-    .btn-stay {
+    .addinvoice__button_item-stay {
       background-color: $dark-gray;
       &:hover {
         background-color: $dark-gray-hover;

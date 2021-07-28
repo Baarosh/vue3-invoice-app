@@ -1,10 +1,10 @@
 <template>
   <header class="header flex row" @click="backHome">
-    <div class="left flex row a-center j-start">
+    <div class="header__left flex row a-center j-start">
       <img src="../assets/background_invoice.svg" alt="" />
       <h1>Invoice Manager</h1>
       <svg
-        class="line-svg"
+        class="header__left_svg"
         width="232"
         height="39"
         viewBox="0 0 232 39"
@@ -20,7 +20,7 @@
         />
       </svg>
     </div>
-    <div class="right flex row a-center j-end">
+    <div class="header__right flex row a-center j-end">
       <h4>Sign out</h4>
     </div>
   </header>
@@ -44,7 +44,8 @@ export default {
   height: 120px;
   width: 100%;
   cursor: pointer;
-  .left {
+
+  .header__left {
     position: relative;
     flex: 1 0 auto;
     height: 100%;
@@ -64,14 +65,14 @@ export default {
       color: $white;
     }
 
-    .line-svg {
+    .header__left_svg {
       position: absolute;
       top: 85px;
       left: 320px;
     }
   }
 
-  .right {
+  .header__right {
     flex: 1 0 auto;
     height: 100%;
 

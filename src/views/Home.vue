@@ -1,24 +1,21 @@
 <template>
-  <section class="section1 flex row a-start j-start">
-    <div class="left flex a-center j-start">
-      <h3>
-        There are <span>{{ INVOICES_FILTERED.length }}</span> invoices in your inventory. <br />
-        <span v-if="filterCountry !== 'Country' || filterStatus !== 'Status'"
-          >Filters applied.</span
-        >
+  <section class="home flex row a-start j-start">
+    <div class="home__left flex a-center j-start">
+      <h3 class="home__left_h3">
+        There are
+        <span>{{ getInvoicesFiltered.length }}</span> invoices in your inventory. <br />
+        <span v-if="filterCountry !== 'Country' || filterStatus !== 'Status'">Filters applied.</span>
       </h3>
     </div>
-    <div class="right flex a-center j-end">
+    <div class="home__right flex a-center j-end">
       <p>Filter by:</p>
-
-      <select id="country-filter" @change="setFilterCountry">
+      <select id="filter-country" v-model="filterCountry" @change="setFilterCountry(filterCountry)">
         <option value="Country" selected>*Country*</option>
         <option value="France">France</option>
         <option value="Poland">Poland</option>
         <option value="Spain">Spain</option>
       </select>
-
-      <select id="status-filter" @change="setFilterStatus">
+      <select id="filter-status" v-model="filterStatus" @change="setFilterStatus(filterStatus)">
         <option value="Status" selected>*Status*</option>
         <option value="Draft">Draft</option>
         <option value="Paid">Paid</option>
@@ -30,6 +27,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import InvoiceList from '../components/InvoiceList.vue';
 
 export default {
@@ -44,19 +42,10 @@ export default {
     };
   },
   computed: {
-    INVOICES_FILTERED() {
-      return this.$store.getters.INVOICES_FILTERED;
-    },
+    ...mapGetters(['getInvoicesFiltered']),
   },
   methods: {
-    setFilterCountry(event) {
-      this.filterCountry = event.target.value;
-      this.$store.dispatch('SET_FILTER_COUNTRY', this.filterCountry);
-    },
-    setFilterStatus(event) {
-      this.filterStatus = event.target.value;
-      this.$store.dispatch('SET_FILTER_STATUS', this.filterStatus);
-    },
+    ...mapActions(['setFilterCountry', 'setFilterStatus']),
   },
 };
 </script>
@@ -64,12 +53,12 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.section1 {
+.home {
   width: 70%;
   margin-top: 50px;
   margin-left: 170px;
 
-  .left {
+  .home__left {
     flex: 1 0 auto;
 
     h3 {
@@ -85,8 +74,9 @@ export default {
     }
   }
 
-  .right {
+  .home__right {
     flex: 4 0 auto;
+
     p {
       color: $white;
       font-size: 18px;
@@ -109,6 +99,7 @@ export default {
         rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
       font-weight: 200;
       letter-spacing: 0px;
+
       option {
         font-weight: 200;
         letter-spacing: 0px;

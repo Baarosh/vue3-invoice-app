@@ -2,11 +2,12 @@
   <the-header></the-header>
   <router-view></router-view>
   <transition name="modal">
-    <add-invoice v-if="MODAL"></add-invoice>
+    <add-invoice v-if="getModal"></add-invoice>
   </transition>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import TheHeader from './components/TheHeader.vue';
 import AddInvoice from './components/AddInvoice.vue';
 
@@ -17,9 +18,7 @@ export default {
     AddInvoice,
   },
   computed: {
-    MODAL() {
-      return this.$store.getters.MODAL;
-    },
+    ...mapGetters(['getModal']),
   },
 };
 </script>
