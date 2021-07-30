@@ -70,7 +70,13 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientNote">Client Note</label>
-          <textarea id="addinvoice__clientNote" v-model="invoice.clientNote.value" cols="30" rows="10"></textarea>
+          <textarea
+            id="addinvoice__clientNote"
+            v-model="invoice.clientNote.value"
+            cols="60"
+            rows="5"
+            maxlength="250"
+          ></textarea>
           <p class="addinvoice__invalid-value" v-if="invoice.clientNote.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -90,46 +96,106 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__paymentDueDate">Payment Due Date</label>
-          <input type="date" id="addinvoice__paymentDueDate" v-model="invoice.paymentDueDate.value" />
+          <input type="date" id="addinvoice__paymentDueDate" v-model="invoice.paymentDueDate.value" disabled />
           <p class="addinvoice__invalid-value" v-if="invoice.paymentDueDate.valid === 0">
             Value is invalid, please correct!
           </p>
           <p class="addinvoice__valid-value" v-if="invoice.paymentDueDate.valid === 1">Value is valid!</p>
         </div>
-        <div class="flex row a-center j-start">
-          <div v-for="item in invoice.invoiceItemList" :key="item.itemId" class="">
-            <label for="addinvoice__itemName">Item Name</label>
-            <input type="text" id="addinvoice__itemName" v-model="item.itemName.value" />
-            <p class="addinvoice__invalid-value" v-if="item.itemName.valid === 0">Value is invalid, please correct!</p>
-            <p class="addinvoice__valid-value" v-if="item.itemName.valid === 1">Value is valid!</p>
+        <div v-if="invoice.invoiceItemList.length > 0" class="addinvoice__items_container">
+          <h3>Products</h3>
+          <transition-group name="addinvoice__items">
+            <div
+              v-for="item in invoice.invoiceItemList"
+              :key="item.itemId"
+              class="addinvoice__items flex a-center j-start"
+            >
+              <label for="addinvoice__itemName">Item Name</label>
+              <input type="text" :id="`addinvoice__itemName${item.itemId.value}`" v-model="item.itemName.value" />
+              <p class="addinvoice__invalid-value" v-if="item.itemName.valid === 0">
+                Value is invalid, please correct!
+              </p>
+              <p class="addinvoice__valid-value" v-if="item.itemName.valid === 1">Value is valid!</p>
 
-            <label for="addinvoice__itemQuantity">Item Quantity</label>
-            <input type="number" id="addinvoice__itemQuantity" v-model="item.itemQuantity.value" />
-            <p class="addinvoice__invalid-value" v-if="item.itemQuantity.valid === 0">
-              Value is invalid, please correct!
-            </p>
-            <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
+              <label for="addinvoice__itemQuantity">Item Quantity</label>
+              <input
+                type="number"
+                id="`addinvoice__itemQuantity${item.itemId.value}`"
+                v-model="item.itemQuantity.value"
+              />
+              <p class="addinvoice__invalid-value" v-if="item.itemQuantity.valid === 0">
+                Value is invalid, please correct!
+              </p>
+              <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
 
-            <label for="addinvoice__unitPrice">Unit Price</label>
-            <input type="text" id="addinvoice__UnitPrice" disabled v-model="item.unitPrice.value" />
-            <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">Value is invalid, please correct!</p>
-            <p class="addinvoice__valid-value" v-if="item.unitPrice.valid === 1">Value is valid!</p>
+              <label for="addinvoice__unitPrice">Unit Price</label>
+              <input
+                type="text"
+                id="`addinvoice__UnitPrice${item.itemId.value}`"
+                disabled
+                v-model="item.unitPrice.value"
+              />
+              <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">
+                Value is invalid, please correct!
+              </p>
+              <p class="addinvoice__valid-value" v-if="item.unitPrice.valid === 1">Value is valid!</p>
 
-            <label for="addinvoice__itemTotal">Item Total</label>
-            <input type="text" id="addinvoice__itemTotal" disabled v-model="item.itemTotal.value" />
-            <p class="addinvoice__invalid-value" v-if="item.itemTotal.valid === 0">Value is invalid, please correct!</p>
-            <p class="addinvoice__valid-value" v-if="item.itemTotal.valid === 1">Value is valid!</p>
-          </div>
+              <label for="addinvoice__itemTotal">Item Total</label>
+              <input
+                type="text"
+                id="`addinvoice__itemTotal${item.itemId.value}`"
+                disabled
+                v-model="item.itemTotal.value"
+              />
+              <p class="addinvoice__invalid-value" v-if="item.itemTotal.valid === 0">
+                Value is invalid, please correct!
+              </p>
+              <p class="addinvoice__valid-value" v-if="item.itemTotal.valid === 1">Value is valid!</p>
+            </div>
+          </transition-group>
+          <svg
+            @click="addNewItem"
+            class="addinvoice-newitem__svg"
+            width="29"
+            height="28"
+            viewBox="0 0 29 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g id="a0">
+              <g id="a3">
+                <path
+                  id="Vector"
+                  d="M15 28C11.26 28 7.74499 26.544 5.10099 23.899C0.778991 19.578 -0.247006 13.025 2.54699 7.595C2.79999 7.104 3.40199 6.911 3.89399 7.163C4.38499 7.415 4.57899 8.018 4.32599 8.51C1.93099 13.165 2.80999 18.781 6.51499 22.485C8.78099 24.752 11.794 26 15 26C18.205 26 21.219 24.752 23.485 22.485C25.751 20.218 27 17.205 27 14C27 10.794 25.752 7.781 23.485 5.515C21.218 3.249 18.206 2 15 2C11.794 2 8.78099 3.249 6.51499 5.515C6.12399 5.906 5.49199 5.906 5.10099 5.515C4.70999 5.124 4.70999 4.492 5.10099 4.101C7.74499 1.457 11.26 0 15 0C18.74 0 22.256 1.457 24.899 4.101C27.544 6.745 29 10.26 29 14C29 17.739 27.544 21.255 24.899 23.899C22.256 26.544 18.74 28 15 28Z"
+                  fill="#11EF5C"
+                />
+              </g>
+              <g id="a2">
+                <path
+                  id="Vector 2"
+                  d="M15 20C14.448 20 14 19.553 14 19V9C14 8.448 14.448 8 15 8C15.552 8 16 8.448 16 9V19C16 19.553 15.552 20 15 20Z"
+                  fill="#11EF5C"
+                />
+              </g>
+              <g id="a1">
+                <path
+                  id="Vector 3"
+                  d="M20 15H10C9.448 15 9 14.552 9 14C9 13.448 9.448 13 10 13H20C20.553 13 21 13.448 21 14C21 14.552 20.553 15 20 15Z"
+                  fill="#11EF5C"
+                />
+              </g>
+            </g>
+          </svg>
         </div>
-        <div class="flex row a-center j-start">
-          <label for="addinvoice__invoiceTotal">Total</label>
-          <input type="number" id="addinvoice__invoiceTotal" v-model="invoice.invoiceTotal.value" />
+        <div class="addinvoice__invoiceTotal_container flex row a-center j-end">
+          <label for="addinvoice__invoiceTotal">Invoice Total</label>
+          <input type="number" id="addinvoice__invoiceTotal" v-model="invoice.invoiceTotal.value" disabled />
           <p class="addinvoice__invalid-value" v-if="invoice.invoiceTotal.valid === 0">
             Value is invalid, please correct!
           </p>
           <p class="addinvoice__valid-value" v-if="invoice.invoiceTotal.valid === 1">Value is valid!</p>
         </div>
-        <div class="addinvoice__buttons flex row a-center j-start">
+        <div class="addinvoice__buttons flex row a-center j-end">
           <button type="button" class="addinvoice__button_item addinvoice__button_item-cancel" @click="toggleModal">
             Cancel
           </button>
@@ -220,6 +286,15 @@ export default {
         this.toggleModal();
       }
     },
+    addNewItem() {
+      this.invoice.invoiceItemList.push({
+        itemId: { value: 0, valid: null },
+        itemName: { value: 'test name', valid: null },
+        itemQuantity: { value: 0, valid: null },
+        unitPrice: { value: 0, valid: null },
+        itemTotal: { value: 0, valid: null },
+      });
+    },
     validateAttribute(attribute) {
       if (attribute === 'date') {
         const d = new Date(this.$refs.date.value);
@@ -291,6 +366,20 @@ export default {
   border: 2px solid $white;
   border-radius: 5px;
   z-index: 99;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $dark-blue;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $white;
+  }
 
   form {
     height: 90%;
@@ -306,17 +395,50 @@ export default {
       margin-bottom: 20px;
       label {
         color: $white;
-        width: 100px;
+        width: 130px;
       }
 
       input {
         width: 200px;
         padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid $dark-blue;
+        background-color: $blue;
+        color: $white;
+        font-weight: 300;
+        padding: 3px;
+        &:disabled {
+          color: $dark-gray;
+        }
       }
+
       select {
         width: 200px;
         padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid $dark-blue;
+        background-color: $blue;
+        color: $white;
+        font-weight: 300;
+        padding: 3px;
       }
+
+      option {
+        font-weight: 300;
+        padding: 3px;
+      }
+
+      textarea {
+        resize: none;
+        padding: 2px 5px;
+        border-radius: 5px;
+        border: 1px solid $dark-blue;
+        background-color: $blue;
+        color: $white;
+        font-weight: 300;
+        padding: 3px;
+      }
+
       p {
         margin-left: 15px;
       }
@@ -327,9 +449,66 @@ export default {
         color: $red-validation;
       }
     }
-    .buttons {
-      margin-top: 230px;
+
+    .addinvoice__items_container {
       width: 100%;
+
+      h3 {
+        color: $white;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+
+      .addinvoice__items {
+        width: 100%;
+        flex-flow: row wrap;
+        row-gap: 5px;
+        background-color: $dark-blue;
+        padding: 10px 10px;
+        border-radius: 15px;
+        border-right: 10px solid $dark-blue;
+        margin-bottom: 10px;
+
+        label {
+          width: fit-content;
+          font-size: 14px;
+          margin-right: 10px;
+        }
+        label:first-of-type {
+          margin-right: 23px;
+        }
+
+        input {
+          width: 70px;
+          margin-right: 50px;
+        }
+        input:first-of-type {
+          width: 445px;
+        }
+      }
+
+      .addinvoice-newitem__svg {
+        path {
+          fill: $orange;
+          transition: all 0.2s ease-out;
+        }
+
+        &:hover {
+          cursor: pointer;
+          path {
+            fill: $orange-hover;
+          }
+        }
+      }
+    }
+
+    .addinvoice__invoiceTotal_container {
+      width: 100%;
+    }
+
+    .addinvoice__buttons {
+      width: 100%;
+      min-height: 100px;
 
       .addinvoice__button_item {
         border: none;
@@ -346,7 +525,7 @@ export default {
 
       .addinvoice__button_item-cancel {
         background-color: $red;
-        margin-right: 230px;
+        margin-right: 240px;
         &:hover {
           background-color: $red-hover;
         }
@@ -433,5 +612,15 @@ export default {
 
 .toggleDialog {
   background: $black-transparent;
+}
+
+.addinvoice__items-enter-active,
+.addinvoice__items-leave-active {
+  transition: all 1s ease;
+}
+.addinvoice__items-enter-from,
+.addinvoice__items-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>
