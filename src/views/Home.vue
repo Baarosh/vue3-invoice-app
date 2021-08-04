@@ -3,8 +3,10 @@
     <div class="home__left flex a-center j-start">
       <h3 class="home__left_h3">
         There are
-        <span>{{ getInvoicesFiltered.length }}</span> invoices in your inventory. <br />
-        <span v-if="filterCountry !== 'Country' || filterStatus !== 'Status'">Filters applied.</span>
+        <span>{{ getInvoicesFiltered.length }}</span> invoices in your inventory.
+        <span class="home__left_h3_span" v-if="filterCountry !== 'Country' || filterStatus !== 'Status'"
+          >Filters applied.</span
+        >
       </h3>
     </div>
     <div class="home__right flex a-center j-end">
@@ -65,11 +67,17 @@ export default {
       color: $white;
       font-size: 20px;
       font-weight: normal;
-
+      position: relative;
       span {
         color: $green;
         font-size: 20px;
         font-weight: normal;
+      }
+
+      .home__left_h3_span {
+        position: absolute;
+        top: 100%;
+        left: 0;
       }
     }
   }

@@ -103,20 +103,21 @@ export default createStore({
     modal: false,
     dialog: false,
     activeInvoice: null,
+    editInvoice: false,
   },
   getters: {
     getInvoicesFiltered(state, getters) {
       const invoicesSorted = getters.getInvoicesSorted;
       if (state.filterCountry !== 'Country' && state.filterStatus !== 'Status') {
         return invoicesSorted.filter(
-          (invoice) => invoice.country === state.filterCountry && invoice.status === state.filterStatus
+          (invoice) => invoice.clientCountry === state.filterCountry && invoice.invoiceStatus === state.filterStatus
         );
       }
       if (state.filterCountry !== 'Country') {
-        return invoicesSorted.filter((invoice) => invoice.country === state.filterCountry);
+        return invoicesSorted.filter((invoice) => invoice.clientCountry === state.filterCountry);
       }
       if (state.filterStatus !== 'Status') {
-        return invoicesSorted.filter((invoice) => invoice.status === state.filterStatus);
+        return invoicesSorted.filter((invoice) => invoice.invoiceStatus === state.filterStatus);
       }
       return invoicesSorted;
     },
@@ -132,32 +133,32 @@ export default createStore({
         if (state.sortingAttribute === 'date') {
           // ZROBIC POPRAWNIE
           return state.invoices.sort((a, b) => {
-            if (a.date < b.date) return -1;
-            if (a.date > b.date) return 1;
+            if (a.invoiceDate < b.invoiceDate) return -1;
+            if (a.invoiceDate > b.invoiceDate) return 1;
             return 0;
           });
         }
         if (state.sortingAttribute === 'country') {
           return state.invoices.sort((a, b) => {
-            if (a.country < b.country) return -1;
-            if (a.country > b.country) return 1;
+            if (a.clientCountry < b.clientCountry) return -1;
+            if (a.clientCountry > b.clientCountry) return 1;
             return 0;
           });
         }
         if (state.sortingAttribute === 'zipCode') {
           return state.invoices.sort((a, b) => {
-            if (a.zipCode < b.zipCode) return -1;
-            if (a.zipCode > b.zipCode) return 1;
+            if (a.clientZipCode < b.clientZipCode) return -1;
+            if (a.clientZipCode > b.clientZipCode) return 1;
             return 0;
           });
         }
         if (state.sortingAttribute === 'total') {
-          return state.invoices.sort((a, b) => a.total - b.total);
+          return state.invoices.sort((a, b) => a.invoiceTotal - b.invoiceTotal);
         }
         if (state.sortingAttribute === 'status') {
           return state.invoices.sort((a, b) => {
-            if (a.status < b.status) return -1;
-            if (a.status > b.status) return 1;
+            if (a.invoiceStatus < b.invoiceStatus) return -1;
+            if (a.invoiceStatus > b.invoiceStatus) return 1;
             return 0;
           });
         }
@@ -174,32 +175,32 @@ export default createStore({
       if (state.sortingAttribute === 'date') {
         // ZROBIC POPRAWNIE
         return state.invoices.sort((a, b) => {
-          if (a.date < b.date) return 1;
-          if (a.date > b.date) return -1;
+          if (a.invoiceDate < b.invoiceDate) return 1;
+          if (a.invoiceDate > b.invoiceDate) return -1;
           return 0;
         });
       }
       if (state.sortingAttribute === 'country') {
         return state.invoices.sort((a, b) => {
-          if (a.country < b.country) return 1;
-          if (a.country > b.country) return -1;
+          if (a.clientCountry < b.clientCountry) return 1;
+          if (a.clientCountry > b.clientCountry) return -1;
           return 0;
         });
       }
       if (state.sortingAttribute === 'zipCode') {
         return state.invoices.sort((a, b) => {
-          if (a.zipCode < b.zipCode) return 1;
-          if (a.zipCode > b.zipCode) return -1;
+          if (a.clientZipCode < b.clientZipCode) return 1;
+          if (a.clientZipCode > b.clientZipCode) return -1;
           return 0;
         });
       }
       if (state.sortingAttribute === 'total') {
-        return state.invoices.sort((a, b) => b.total - a.total);
+        return state.invoices.sort((a, b) => b.invoiceTotal - a.invoiceTotal);
       }
       if (state.sortingAttribute === 'status') {
         return state.invoices.sort((a, b) => {
-          if (a.status < b.status) return 1;
-          if (a.status > b.status) return -1;
+          if (a.invoiceStatus < b.invoiceStatus) return 1;
+          if (a.invoiceStatus > b.invoiceStatus) return -1;
           return 0;
         });
       }
@@ -213,6 +214,9 @@ export default createStore({
     },
     activeInvoice(state) {
       return state.activeInvoice;
+    },
+    getEditInvoice(state) {
+      return state.editInvoice;
     },
   },
   mutations: {
@@ -270,7 +274,9 @@ export default createStore({
       }, 100);
     },
     addInvoice(context, payload) {
-      context.commit('addInvoice', payload);
+      setTimeout(() => {
+        context.commit('addInvoice', payload);
+      }, 400);
     },
     setActiveInvoice(context, payload) {
       context.commit('setActiveInvoice', payload);

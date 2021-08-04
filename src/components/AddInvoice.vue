@@ -2,7 +2,8 @@
   <div class="addinvoice__wrapper" :class="{ getDialog }" @click="toggleDialogByOutClick" ref="wrapper">
     <section class="addinvoice flex column a-center j-center">
       <form class="flex column a-start j-start">
-        <h2>New Invoice</h2>
+        <h2 v-if="!getEditInvoice">New Invoice</h2>
+        <h2 v-else>Edit Invoice</h2>
         <div class="flex row a-center j-start">
           <label for="addinvoice__invoiceId">Invoice Id</label>
           <input type="text" id="addinvoice__invoiceId" disabled v-model="invoice.invoiceId.value" />
@@ -111,42 +112,28 @@
               class="addinvoice__items flex a-center j-start"
             >
               <label for="addinvoice__itemName">Item Name</label>
-              <input type="text" :id="`addinvoice__itemName${item.itemId.value}`" v-model="item.itemName.value" />
+              <input type="text" :id="`addinvoice__itemName${item.itemId.value}`" />
               <p class="addinvoice__invalid-value" v-if="item.itemName.valid === 0">
                 Value is invalid, please correct!
               </p>
               <p class="addinvoice__valid-value" v-if="item.itemName.valid === 1">Value is valid!</p>
 
               <label for="addinvoice__itemQuantity">Item Quantity</label>
-              <input
-                type="number"
-                id="`addinvoice__itemQuantity${item.itemId.value}`"
-                v-model="item.itemQuantity.value"
-              />
+              <input type="number" id="`addinvoice__itemQuantity${item.itemId.value}`" />
               <p class="addinvoice__invalid-value" v-if="item.itemQuantity.valid === 0">
                 Value is invalid, please correct!
               </p>
               <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
 
               <label for="addinvoice__unitPrice">Unit Price</label>
-              <input
-                type="text"
-                id="`addinvoice__UnitPrice${item.itemId.value}`"
-                disabled
-                v-model="item.unitPrice.value"
-              />
+              <input type="text" id="`addinvoice__UnitPrice${item.itemId.value}`" disabled />
               <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">
                 Value is invalid, please correct!
               </p>
               <p class="addinvoice__valid-value" v-if="item.unitPrice.valid === 1">Value is valid!</p>
 
               <label for="addinvoice__itemTotal">Item Total</label>
-              <input
-                type="text"
-                id="`addinvoice__itemTotal${item.itemId.value}`"
-                disabled
-                v-model="item.itemTotal.value"
-              />
+              <input type="text" id="`addinvoice__itemTotal${item.itemId.value}`" disabled />
               <p class="addinvoice__invalid-value" v-if="item.itemTotal.valid === 0">
                 Value is invalid, please correct!
               </p>
@@ -220,7 +207,7 @@
       <div class="addinvoice__confirm" :class="{ getDialog }">
         <h3>Do you want to abandon the form? <br />Invoice will not be saved.</h3>
         <div>
-          <button type="button" class="addinvoice__button_item addinvoice__button_item-leave" @click="leaveNewInvoice">
+          <button type="button" class="addinvoice__button_item addinvoice__button_item-leave" @click="leaveInvoice">
             Yes
           </button>
           <button type="button" class="addinvoice__button_item addinvoice__button_item-stay" @click="toggleDialog">
@@ -239,7 +226,17 @@ export default {
   name: 'addinvoice__wrapper',
   data() {
     return {
-      invoice: {
+      invoice: null,
+      grayBackground: false,
+    };
+  },
+  computed: {
+    ...mapGetters(['getDialog', 'getEditInvoice']),
+  },
+  created() {
+    console.log('created');
+    if (this.getEditInvoice) {
+      this.invoice = {
         invoiceId: { value: null, valid: null },
         invoiceDate: { value: null, valid: null },
         clientName: { value: null, valid: null },
@@ -262,15 +259,37 @@ export default {
         ],
         invoiceTotal: { value: 0, valid: null },
         invoiceStatus: { value: null, valid: null },
-      },
-      grayBackground: false,
-    };
-  },
-  computed: {
-    ...mapGetters(['getDialog']),
+      };
+    } else {
+      this.invoice = {
+        invoiceId: { value: null, valid: null },
+        invoiceDate: { value: null, valid: null },
+        clientName: { value: null, valid: null },
+        clientEmail: { value: null, valid: null },
+        clientStreetAddress: { value: null, valid: null },
+        clientCity: { value: null, valid: null },
+        clientZipCode: { value: null, valid: null },
+        clientCountry: { value: null, valid: null },
+        clientNote: { value: null, valid: null },
+        paymentTerms: { value: null, valid: null },
+        paymentDueDate: { value: null, valid: null },
+        invoiceItemList: [
+          {
+            itemId: { value: 0, valid: null },
+            itemName: { value: 0, valid: null },
+            itemQuantity: { value: 0, valid: null },
+            unitPrice: { value: 0, valid: null },
+            itemTotal: { value: 0, valid: null },
+          },
+        ],
+        invoiceTotal: { value: 0, valid: null },
+        invoiceStatus: { value: null, valid: null },
+      };
+    }
   },
   methods: {
     ...mapActions(['toggleModal', 'toggleDialog', 'addInvoice']),
+
     toggleDialogByOutClick(event) {
       if (event.target === this.$refs.wrapper) {
         this.toggleDialog();
@@ -280,12 +299,6 @@ export default {
       this.toggleDialog();
       this.toggleModal();
     },
-    addInvoice() {
-      if (this.validateForm()) {
-        this.addInvoice({});
-        this.toggleModal();
-      }
-    },
     addNewItem() {
       this.invoice.invoiceItemList.push({
         itemId: { value: 0, valid: null },
@@ -294,6 +307,26 @@ export default {
         unitPrice: { value: 0, valid: null },
         itemTotal: { value: 0, valid: null },
       });
+    },
+    createInvoice(status) {
+      this.addInvoice({
+        invoiceId: this.invoiceId,
+        invoiceDate: this.invoiceDate,
+        clientName: this.clientName,
+        clientEmail: this.clientEmail,
+        clientStreetAddress: this.clientStreetAddress,
+        clientCity: this.clientCity,
+        clientZipCode: this.clientZipCode,
+        clientCountry: this.clientCountry,
+        clientNote: this.clientNote,
+        paymentTerms: this.paymentTerms,
+        paymentDueDate: this.paymentDueDate,
+        invoiceItemList: this.invoiceItemList,
+        invoiceTotal: this.invoiceTotal,
+        invoiceStatus: status,
+      });
+      this.toggleModal();
+      // }
     },
     validateAttribute(attribute) {
       if (attribute === 'date') {
@@ -326,18 +359,6 @@ export default {
         this.totalValid = 1;
       } else {
         this.totalValid = 0;
-      }
-    },
-    validateForm() {
-      return this.dateValid && this.countryValid && this.zipCodeValid && this.totalValid;
-    },
-    createInvoice(status) {
-      this.validateAttribute('date');
-      this.validateAttribute('country');
-      this.validateAttribute('zipCode');
-      this.validateAttribute('total');
-      if (this.validateForm()) {
-        this.addInvoice(status);
       }
     },
   },
