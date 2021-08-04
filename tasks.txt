@@ -1,0 +1,6 @@
+***TASKS***
+
+1. Validation of invoice attributes.
+2. Calculate invoice total.
+3. Display invoice details.
+4. Enable editing existing invoice.

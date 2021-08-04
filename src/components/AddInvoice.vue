@@ -126,7 +126,7 @@
               <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
 
               <label for="addinvoice__unitPrice">Unit Price</label>
-              <input type="text" id="`addinvoice__UnitPrice${item.itemId.value}`" disabled />
+              <input type="number" id="`addinvoice__UnitPrice${item.itemId.value}`" />
               <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">
                 Value is invalid, please correct!
               </p>
