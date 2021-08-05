@@ -10,7 +10,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__invoiceDate">Invoice Date</label>
-          <input type="date" id="addinvoice__invoiceDate" v-model="invoice.invoiceDate.value" />
+          <input
+            type="date"
+            id="addinvoice__invoiceDate"
+            v-model="invoice.invoiceDate.value"
+            @input="validateAttribute('invoiceDate')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.invoiceDate.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -18,7 +23,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientName">Client Name</label>
-          <input type="text" id="addinvoice__clientName" v-model="invoice.clientName.value" />
+          <input
+            type="text"
+            id="addinvoice__clientName"
+            v-model="invoice.clientName.value"
+            @input="validateAttribute('clientName')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.clientName.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -26,7 +36,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientEmail">Client Email</label>
-          <input type="email" id="addinvoice__clientEmail" v-model="invoice.clientEmail.value" />
+          <input
+            type="email"
+            id="addinvoice__clientEmail"
+            v-model="invoice.clientEmail.value"
+            @input="validateAttribute('clientEmail')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.clientEmail.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -34,7 +49,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientStreetAddress">Client Street Address</label>
-          <input type="text" id="addinvoice__clientStreetAddress" v-model="invoice.clientStreetAddress.value" />
+          <input
+            type="text"
+            id="addinvoice__clientStreetAddress"
+            v-model="invoice.clientStreetAddress.value"
+            @input="validateAttribute('clientStreetAddress')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.clientStreetAddress.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -42,7 +62,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientCity">Client City</label>
-          <input type="text" id="addinvoice__clientCity" v-model="invoice.clientCity.value" />
+          <input
+            type="text"
+            id="addinvoice__clientCity"
+            v-model="invoice.clientCity.value"
+            @input="validateAttribute('clientCity')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.clientCity.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -50,7 +75,12 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientZipCode">Client Zip Code</label>
-          <input type="text" id="addinvoice__clientZipCode" v-model="invoice.clientZipCode.value" />
+          <input
+            type="text"
+            id="addinvoice__clientZipCode"
+            v-model="invoice.clientZipCode.value"
+            @input="validateAttribute('clientZipCode')"
+          />
           <p class="addinvoice__invalid-value" v-if="invoice.clientZipCode.valid === 0">
             Value is invalid, please correct!
           </p>
@@ -58,7 +88,11 @@
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__clientCountry">Client country</label>
-          <select id="addinvoice__clientCountry" v-model="invoice.clientCountry.value">
+          <select
+            id="addinvoice__clientCountry"
+            v-model="invoice.clientCountry.value"
+            @change="validateAttribute('clientCountry')"
+          >
             <option value="Country" selected disabled>*Select country*</option>
             <option value="France">France</option>
             <option value="Poland">Poland</option>
@@ -78,15 +112,15 @@
             rows="5"
             maxlength="250"
           ></textarea>
-          <p class="addinvoice__invalid-value" v-if="invoice.clientNote.valid === 0">
-            Value is invalid, please correct!
-          </p>
-          <p class="addinvoice__valid-value" v-if="invoice.clientNote.valid === 1">Value is valid!</p>
         </div>
         <div class="flex row a-center j-start">
           <label for="addinvoice__paymentTerms">Payment Terms</label>
-          <select id="addinvoice__paymentTerms" v-model="invoice.paymentTerms.value">
-            <option value="Country" selected disabled>*Select terms*</option>
+          <select
+            id="addinvoice__paymentTerms"
+            v-model="invoice.paymentTerms.value"
+            @change="validateAttribute('paymentTerms')"
+          >
+            <option value="Terms" selected disabled>*Select terms*</option>
             <option value="Payment30">Payment in 30 days</option>
             <option value="Payment60">Payment in 60 days</option>
           </select>
@@ -98,10 +132,6 @@
         <div class="flex row a-center j-start">
           <label for="addinvoice__paymentDueDate">Payment Due Date</label>
           <input type="date" id="addinvoice__paymentDueDate" v-model="invoice.paymentDueDate.value" disabled />
-          <p class="addinvoice__invalid-value" v-if="invoice.paymentDueDate.valid === 0">
-            Value is invalid, please correct!
-          </p>
-          <p class="addinvoice__valid-value" v-if="invoice.paymentDueDate.valid === 1">Value is valid!</p>
         </div>
         <div v-if="invoice.invoiceItemList.length > 0" class="addinvoice__items_container">
           <h3>Products</h3>
@@ -177,10 +207,6 @@
         <div class="addinvoice__invoiceTotal_container flex row a-center j-end">
           <label for="addinvoice__invoiceTotal">Invoice Total</label>
           <input type="number" id="addinvoice__invoiceTotal" v-model="invoice.invoiceTotal.value" disabled />
-          <p class="addinvoice__invalid-value" v-if="invoice.invoiceTotal.valid === 0">
-            Value is invalid, please correct!
-          </p>
-          <p class="addinvoice__valid-value" v-if="invoice.invoiceTotal.valid === 1">Value is valid!</p>
         </div>
         <div class="addinvoice__buttons flex row a-center j-end">
           <button type="button" class="addinvoice__button_item addinvoice__button_item-cancel" @click="toggleModal">
@@ -234,7 +260,6 @@ export default {
     ...mapGetters(['getDialog', 'getEditInvoice']),
   },
   created() {
-    console.log('created');
     if (this.getEditInvoice) {
       this.invoice = {
         invoiceId: { value: null, valid: null },
@@ -269,9 +294,9 @@ export default {
         clientStreetAddress: { value: null, valid: null },
         clientCity: { value: null, valid: null },
         clientZipCode: { value: null, valid: null },
-        clientCountry: { value: null, valid: null },
+        clientCountry: { value: 'Country', valid: null },
         clientNote: { value: null, valid: null },
-        paymentTerms: { value: null, valid: null },
+        paymentTerms: { value: 'Terms', valid: null },
         paymentDueDate: { value: null, valid: null },
         invoiceItemList: [
           {
@@ -326,39 +351,62 @@ export default {
         invoiceStatus: status,
       });
       this.toggleModal();
-      // }
     },
     validateAttribute(attribute) {
-      if (attribute === 'date') {
-        const d = new Date(this.$refs.date.value);
-        const day = d.getDate();
-        const month = d.getMonth();
-        const year = d.getFullYear(0);
-        if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
-          this.dateValid = 1;
-        } else {
-          this.dateValid = 0;
+      switch (attribute) {
+        case 'invoiceDate': {
+          const d = new Date(this.invoice.invoiceDate.value);
+          const day = d.getDate();
+          const month = d.getMonth();
+          const year = d.getFullYear(0);
+          if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
+            this.invoice.invoiceDate.valid = 1;
+          } else {
+            this.invoice.invoiceDate.valid = 0;
+          }
+          break;
         }
-      } else if (attribute === 'country') {
-        if (this.$refs.country.value !== 'Country') {
-          this.countryValid = 1;
-        } else {
-          this.countryValid = 0;
+        case 'clientName':
+        case 'clientEmail':
+        case 'clientStreetAddress':
+        case 'clientCity':
+        case 'clientZipCode': {
+          if (this.invoice.clientName.value.length > 3) {
+            this.invoice.clientName.valid = 1;
+          } else {
+            this.invoice.clientName.valid = 0;
+          }
+          break;
         }
-      } else if (attribute === 'zipCode') {
-        if (this.$refs.zipCode.value.length >= 4 && this.$refs.zipCode.value.length <= 10) {
-          this.zipCodeValid = 1;
-        } else {
-          this.zipCodeValid = 0;
+        case 'clientCountry': {
+          if (this.invoice.clientCountry.value !== 'Country') {
+            this.invoice.clientCountry.valid = 1;
+          } else {
+            this.invoice.clientCountry.valid = 0;
+          }
+          break;
         }
-      } else if (
-        this.$refs.total.value >= -100000 &&
-        this.$refs.total.value <= 100000 &&
-        this.$refs.total.value.length > 0
-      ) {
-        this.totalValid = 1;
-      } else {
-        this.totalValid = 0;
+        case 'paymentTerms': {
+          if (this.invoice.paymentTerms.value !== 'Terms') {
+            this.invoice.paymentTerms.valid = 1;
+          } else {
+            this.invoice.paymentTerms.valid = 0;
+          }
+          break;
+        }
+        case 'invoiceItemList': {
+          for (let i = 0; i < this.invoiceItemList.length; i += 1) {
+            if (this.invoiceItemList[i].value.length > 0) {
+              this.invoiceItemList[i].valid = 1;
+            } else this.invoiceItemList[i].valid = 0;
+
+            // DO DOKONCZENIA
+          }
+          break;
+        }
+        default: {
+          break;
+        }
       }
     },
   },
@@ -463,10 +511,10 @@ export default {
       p {
         margin-left: 15px;
       }
-      .valid {
+      .addinvoice__valid-value {
         color: $green-validation;
       }
-      .invalid {
+      .addinvoice__invalid-value {
         color: $red-validation;
       }
     }
