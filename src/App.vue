@@ -50,6 +50,7 @@ export default {
   flex-flow: column nowrap;
   position: relative;
 }
+
 .modal-enter-active,
 .modal-leave-active {
   transition: all 0.3s ease-in-out;

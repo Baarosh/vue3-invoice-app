@@ -142,32 +142,44 @@
               class="addinvoice__items flex a-center j-start"
             >
               <label for="addinvoice__itemName">Item Name</label>
-              <input type="text" :id="`addinvoice__itemName${item.itemId.value}`" />
-              <p class="addinvoice__invalid-value" v-if="item.itemName.valid === 0">
-                Value is invalid, please correct!
-              </p>
-              <p class="addinvoice__valid-value" v-if="item.itemName.valid === 1">Value is valid!</p>
+              <input
+                type="text"
+                :id="`addinvoice__itemName${item.itemId.value}`"
+                :class="{
+                  'addinvoice__item-name_valid-value': item.itemName.valid === 1,
+                  'addinvoice__item-name_invalid-value': item.itemName.valid === 0,
+                }"
+                v-model="item.itemName.value"
+                @input="validateAttribute('invoiceItemList')"
+              />
 
               <label for="addinvoice__itemQuantity">Item Quantity</label>
-              <input type="number" id="`addinvoice__itemQuantity${item.itemId.value}`" />
-              <p class="addinvoice__invalid-value" v-if="item.itemQuantity.valid === 0">
-                Value is invalid, please correct!
-              </p>
-              <p class="addinvoice__valid-value" v-if="item.itemQuantity.valid === 1">Value is valid!</p>
+              <input
+                type="number"
+                :id="`addinvoice__itemQuantity${item.itemId.value}`"
+                :class="{
+                  'addinvoice__item-qty_valid-value': item.itemQuantity.valid === 1,
+                  'addinvoice__item-qty_invalid-value': item.itemQuantity.valid === 0,
+                }"
+                v-model="item.itemQuantity.value"
+                @input="validateAttribute('invoiceItemList')"
+              />
 
               <label for="addinvoice__unitPrice">Unit Price</label>
-              <input type="number" id="`addinvoice__UnitPrice${item.itemId.value}`" />
-              <p class="addinvoice__invalid-value" v-if="item.unitPrice.valid === 0">
-                Value is invalid, please correct!
-              </p>
-              <p class="addinvoice__valid-value" v-if="item.unitPrice.valid === 1">Value is valid!</p>
+              <input
+                type="number"
+                :id="`addinvoice__unitPrice${item.itemId.value}`"
+                disabled
+                v-model="item.unitPrice.value"
+              />
 
               <label for="addinvoice__itemTotal">Item Total</label>
-              <input type="text" id="`addinvoice__itemTotal${item.itemId.value}`" disabled />
-              <p class="addinvoice__invalid-value" v-if="item.itemTotal.valid === 0">
-                Value is invalid, please correct!
-              </p>
-              <p class="addinvoice__valid-value" v-if="item.itemTotal.valid === 1">Value is valid!</p>
+              <input
+                type="text"
+                :id="`addinvoice__itemTotal${item.itemId.value}`"
+                disabled
+                v-model="item.itemTotal.value"
+              />
             </div>
           </transition-group>
           <svg
@@ -262,7 +274,7 @@ export default {
   created() {
     if (this.getEditInvoice) {
       this.invoice = {
-        invoiceId: { value: null, valid: null },
+        invoiceId: { value: 0, valid: null },
         invoiceDate: { value: null, valid: null },
         clientName: { value: null, valid: null },
         clientEmail: { value: null, valid: null },
@@ -287,7 +299,7 @@ export default {
       };
     } else {
       this.invoice = {
-        invoiceId: { value: null, valid: null },
+        invoiceId: { value: 0, valid: null },
         invoiceDate: { value: null, valid: null },
         clientName: { value: null, valid: null },
         clientEmail: { value: null, valid: null },
@@ -327,7 +339,7 @@ export default {
     addNewItem() {
       this.invoice.invoiceItemList.push({
         itemId: { value: 0, valid: null },
-        itemName: { value: 'test name', valid: null },
+        itemName: { value: '', valid: null },
         itemQuantity: { value: 0, valid: null },
         unitPrice: { value: 0, valid: null },
         itemTotal: { value: 0, valid: null },
@@ -366,15 +378,15 @@ export default {
           }
           break;
         }
-        case 'clientName':
         case 'clientEmail':
+        case 'clientName':
         case 'clientStreetAddress':
         case 'clientCity':
         case 'clientZipCode': {
-          if (this.invoice.clientName.value.length > 3) {
-            this.invoice.clientName.valid = 1;
+          if (this.invoice[attribute].value.length > 3) {
+            this.invoice[attribute].valid = 1;
           } else {
-            this.invoice.clientName.valid = 0;
+            this.invoice[attribute].valid = 0;
           }
           break;
         }
@@ -395,12 +407,21 @@ export default {
           break;
         }
         case 'invoiceItemList': {
-          for (let i = 0; i < this.invoiceItemList.length; i += 1) {
-            if (this.invoiceItemList[i].value.length > 0) {
-              this.invoiceItemList[i].valid = 1;
-            } else this.invoiceItemList[i].valid = 0;
-
-            // DO DOKONCZENIA
+          if (this.invoice.invoiceItemList.length) {
+            for (let i = 0; i < this.invoice.invoiceItemList.length; i += 1) {
+              if (
+                this.invoice.invoiceItemList[i].itemName.value.length &&
+                this.invoice.invoiceItemList[i].itemName.value.length > 2
+              ) {
+                this.invoice.invoiceItemList[i].itemName.valid = 1;
+              } else this.invoice.invoiceItemList[i].itemName.valid = 0;
+              if (
+                this.invoice.invoiceItemList[i].itemQuantity.value &&
+                this.invoice.invoiceItemList[i].itemQuantity.value > 0
+              ) {
+                this.invoice.invoiceItemList[i].itemQuantity.valid = 1;
+              } else this.invoice.invoiceItemList[i].itemQuantity.valid = 0;
+            }
           }
           break;
         }
@@ -408,6 +429,33 @@ export default {
           break;
         }
       }
+    },
+    validateInvoice() {
+      this.validateAttribute('invoiceDate');
+      this.validateAttribute('clientEmail');
+      this.validateAttribute('clientName');
+      this.validateAttribute('clientStreetAddress');
+      this.validateAttribute('clientCity');
+      this.validateAttribute('clientZipCode');
+      this.validateAttribute('clientCountry');
+      this.validateAttribute('paymentTerms');
+      this.validateAttribute('invoiceItemList');
+
+      const validItems = this.invoice.invoiceItemList.every((item) => item.itemName.valid && item.itemQuantity.valid);
+
+      return (
+        this.invoice.invoiceDate.valid &&
+        this.invoice.clientEmail.valid &&
+        this.invoice.clientName.valid &&
+        this.invoice.clientStreetAddress.valid &&
+        this.invoice.clientCity.valid &&
+        this.invoice.clientZipCode.valid &&
+        this.invoice.clientCountry.valid &&
+        this.invoice.paymentTerms.valid &&
+        this.invoice.clientCountry.valid &&
+        validItems
+      );
+      // DO SPRAWDZENIA !!!!!
     },
   },
 };
@@ -448,6 +496,20 @@ export default {
 
   &::-webkit-scrollbar-thumb {
     background-color: $white;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border: 1px solid $dark-blue;
+    -webkit-text-fill-color: $white;
+    -webkit-box-shadow: 0 0 0px 10000px $blue inset;
   }
 
   form {
@@ -516,6 +578,18 @@ export default {
       }
       .addinvoice__invalid-value {
         color: $red-validation;
+      }
+      .addinvoice__item-name_valid-value {
+        border-bottom-color: $green-validation;
+      }
+      .addinvoice__item-name_invalid-value {
+        border-bottom-color: $red-validation;
+      }
+      .addinvoice__item-qty_valid-value {
+        border-bottom-color: $green-validation;
+      }
+      .addinvoice__item-qty_invalid-value {
+        border-bottom-color: $red-validation;
       }
     }
 
