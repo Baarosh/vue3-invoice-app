@@ -346,36 +346,40 @@ export default {
       });
     },
     createInvoice(status) {
-      this.addInvoice({
-        invoiceId: this.invoiceId,
-        invoiceDate: this.invoiceDate,
-        clientName: this.clientName,
-        clientEmail: this.clientEmail,
-        clientStreetAddress: this.clientStreetAddress,
-        clientCity: this.clientCity,
-        clientZipCode: this.clientZipCode,
-        clientCountry: this.clientCountry,
-        clientNote: this.clientNote,
-        paymentTerms: this.paymentTerms,
-        paymentDueDate: this.paymentDueDate,
-        invoiceItemList: this.invoiceItemList,
-        invoiceTotal: this.invoiceTotal,
-        invoiceStatus: status,
-      });
-      this.toggleModal();
+      if (this.validateInvoice()) {
+        this.addInvoice({
+          invoiceId: this.invoice.invoiceId.value,
+          invoiceDate: this.invoice.invoiceDate.value,
+          clientName: this.invoice.clientName.value,
+          clientEmail: this.invoice.clientEmail.value,
+          clientStreetAddress: this.invoice.clientStreetAddress.value,
+          clientCity: this.invoice.clientCity.value,
+          clientZipCode: this.invoice.clientZipCode.value,
+          clientCountry: this.invoice.clientCountry.value,
+          clientNote: this.invoice.clientNote.value,
+          paymentTerms: this.invoice.paymentTerms.value,
+          paymentDueDate: this.invoice.paymentDueDate.value,
+          invoiceItemList: this.invoice.invoiceItemList,
+          invoiceTotal: this.invoice.invoiceTotal.value,
+          invoiceStatus: status,
+        });
+        this.toggleModal();
+      }
     },
     validateAttribute(attribute) {
       switch (attribute) {
         case 'invoiceDate': {
-          const d = new Date(this.invoice.invoiceDate.value);
-          const day = d.getDate();
-          const month = d.getMonth();
-          const year = d.getFullYear(0);
-          if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
-            this.invoice.invoiceDate.valid = 1;
-          } else {
-            this.invoice.invoiceDate.valid = 0;
-          }
+          if (this.invoice.invoiceDate.value) {
+            const d = new Date(this.invoice.invoiceDate.value);
+            const day = d.getDate();
+            const month = d.getMonth();
+            const year = d.getFullYear(0);
+            if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
+              this.invoice.invoiceDate.valid = 1;
+            } else {
+              this.invoice.invoiceDate.valid = 0;
+            }
+          } else this.invoice.invoiceDate.valid = 0;
           break;
         }
         case 'clientEmail':
@@ -383,11 +387,13 @@ export default {
         case 'clientStreetAddress':
         case 'clientCity':
         case 'clientZipCode': {
-          if (this.invoice[attribute].value.length > 3) {
-            this.invoice[attribute].valid = 1;
-          } else {
-            this.invoice[attribute].valid = 0;
-          }
+          if (this.invoice[attribute].value) {
+            if (this.invoice[attribute].value.length > 3) {
+              this.invoice[attribute].valid = 1;
+            } else {
+              this.invoice[attribute].valid = 0;
+            }
+          } else this.invoice[attribute].valid = 0;
           break;
         }
         case 'clientCountry': {

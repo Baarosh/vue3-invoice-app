@@ -1,6 +1,6 @@
 ***TASKS***
 
-1. Validation of invoice attributes.
+DONE 1. Validation of invoice attributes.
 2. Calculate payment due date.
 2. Calculate item total
 3. Calculate invoice total.
