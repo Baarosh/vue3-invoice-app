@@ -142,16 +142,18 @@
               class="addinvoice__items flex a-center j-start"
             >
               <label for="addinvoice__itemName">Item Name</label>
-              <input
-                type="text"
+              <select
                 :id="`addinvoice__itemName${item.itemId.value}`"
+                v-model="item.itemName.value"
                 :class="{
                   'addinvoice__item-name_valid-value': item.itemName.valid === 1,
                   'addinvoice__item-name_invalid-value': item.itemName.valid === 0,
                 }"
-                v-model="item.itemName.value"
-                @input="validateAttribute('invoiceItemList')"
-              />
+                @change="validateAttribute('invoiceItemList')"
+              >
+                <option value="Item" selected disabled>*Select item*</option>
+                <option v-for="item in getItemDatabase" :key="item.id" :value="item.name">{{ item.name }}</option>
+              </select>
 
               <label for="addinvoice__itemQuantity">Item Quantity</label>
               <input
@@ -261,8 +263,6 @@
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 
-moment().format();
-
 export default {
   name: 'addinvoice__wrapper',
   data() {
@@ -292,9 +292,26 @@ export default {
         this.invoice.paymentTerms.value = 'Terms';
       }
     },
+    invoiceItemList: {
+      handler() {
+        if (this.invoice) {
+          for (let i = 0; i < this.invoiceItemList.length; i += 1) {
+            const { name } = this.invoiceItemList[i];
+            const db = this.getItemDatabase;
+
+            const itemIndex = db.findIndex((p) => p.name === name);
+            // DOKONCZYC
+            if (itemIndex !== -1) {
+              this.invoiceItemList[i].unitPrice = db[itemIndex].price;
+            }
+          }
+        }
+      },
+      deep: true,
+    },
   },
   computed: {
-    ...mapGetters(['getDialog', 'getEditInvoice']),
+    ...mapGetters(['getDialog', 'getEditInvoice', 'getItemDatabase']),
     paymentTerms() {
       if (this.invoice) {
         return this.invoice.paymentTerms.value;
@@ -304,6 +321,12 @@ export default {
     invoiceDate() {
       if (this.invoice) {
         return this.invoice.invoiceDate.value;
+      }
+      return null;
+    },
+    invoiceItemList() {
+      if (this.invoice) {
+        return this.invoice.invoiceItemList;
       }
       return null;
     },
@@ -325,7 +348,7 @@ export default {
         invoiceItemList: [
           {
             itemId: { value: 0, valid: null },
-            itemName: { value: 0, valid: null },
+            itemName: { value: 'Item', valid: null },
             itemQuantity: { value: 0, valid: null },
             unitPrice: { value: 0, valid: null },
             itemTotal: { value: 0, valid: null },
@@ -350,7 +373,7 @@ export default {
         invoiceItemList: [
           {
             itemId: { value: 0, valid: null },
-            itemName: { value: 0, valid: null },
+            itemName: { value: 'Item', valid: null },
             itemQuantity: { value: 0, valid: null },
             unitPrice: { value: 0, valid: null },
             itemTotal: { value: 0, valid: null },
@@ -407,14 +430,16 @@ export default {
       switch (attribute) {
         case 'invoiceDate': {
           if (this.invoice.invoiceDate.value) {
-            // dokonczyc
-            //   if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
-            //     this.invoice.invoiceDate.valid = 1;
-            //   } else {
-            //     this.invoice.invoiceDate.valid = 0;
-            //   }
-            // } else this.invoice.invoiceDate.valid = 0;
-          }
+            const date = moment(this.invoice.invoiceDate.value);
+            const day = date.date();
+            const month = date.month();
+            const year = date.year();
+            if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
+              this.invoice.invoiceDate.valid = 1;
+            } else {
+              this.invoice.invoiceDate.valid = 0;
+            }
+          } else this.invoice.invoiceDate.valid = 0;
           break;
         }
         case 'clientEmail':
@@ -496,7 +521,6 @@ export default {
         this.invoice.clientCountry.valid &&
         validItems
       );
-      // DO SPRAWDZENIA !!!!!
     },
   },
 };
@@ -580,7 +604,8 @@ export default {
         font-weight: 300;
         padding: 3px;
         &:disabled {
-          color: $dark-gray;
+          color: $white;
+          background-color: $dark-blue4;
         }
       }
 
@@ -666,7 +691,8 @@ export default {
           width: 70px;
           margin-right: 50px;
         }
-        input:first-of-type {
+
+        select {
           width: 445px;
         }
       }

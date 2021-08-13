@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import itemDatabase from './dict';
 
 export default createStore({
   state: {
@@ -104,6 +105,7 @@ export default createStore({
     dialog: false,
     activeInvoice: null,
     editInvoice: false,
+    itemDatabase: itemDatabase(),
   },
   getters: {
     getInvoicesFiltered(state, getters) {
@@ -217,6 +219,9 @@ export default createStore({
     },
     getEditInvoice(state) {
       return state.editInvoice;
+    },
+    getItemDatabase(state) {
+      return state.itemDatabase;
     },
   },
   mutations: {
