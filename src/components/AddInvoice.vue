@@ -259,6 +259,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import moment from 'moment';
+
+moment().format();
 
 export default {
   name: 'addinvoice__wrapper',
@@ -268,8 +271,42 @@ export default {
       grayBackground: false,
     };
   },
+  watch: {
+    paymentTerms(value) {
+      if (this.invoiceDate) {
+        const date = moment(this.invoiceDate);
+        if (value === 'Payment30') {
+          date.add(30, 'days');
+          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+        } else if (value === 'Payment60') {
+          date.add(60, 'days');
+          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+        } else this.invoice.paymentDueDate.value = null;
+      }
+    },
+    invoiceDate() {
+      if (this.paymentTerms === 'Terms') {
+        this.invoice.paymentTerms.valid = null;
+      } else {
+        this.invoice.paymentTerms.valid = null;
+        this.invoice.paymentTerms.value = 'Terms';
+      }
+    },
+  },
   computed: {
     ...mapGetters(['getDialog', 'getEditInvoice']),
+    paymentTerms() {
+      if (this.invoice) {
+        return this.invoice.paymentTerms.value;
+      }
+      return null;
+    },
+    invoiceDate() {
+      if (this.invoice) {
+        return this.invoice.invoiceDate.value;
+      }
+      return null;
+    },
   },
   created() {
     if (this.getEditInvoice) {
@@ -370,16 +407,14 @@ export default {
       switch (attribute) {
         case 'invoiceDate': {
           if (this.invoice.invoiceDate.value) {
-            const d = new Date(this.invoice.invoiceDate.value);
-            const day = d.getDate();
-            const month = d.getMonth();
-            const year = d.getFullYear(0);
-            if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
-              this.invoice.invoiceDate.valid = 1;
-            } else {
-              this.invoice.invoiceDate.valid = 0;
-            }
-          } else this.invoice.invoiceDate.valid = 0;
+            // dokonczyc
+            //   if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1901 && year <= 2100) {
+            //     this.invoice.invoiceDate.valid = 1;
+            //   } else {
+            //     this.invoice.invoiceDate.valid = 0;
+            //   }
+            // } else this.invoice.invoiceDate.valid = 0;
+          }
           break;
         }
         case 'clientEmail':
@@ -484,8 +519,8 @@ export default {
   height: 700px;
   top: 150px;
   left: 40px;
-  background: -webkit-linear-gradient(180deg, rgb(32, 88, 145), rgb(8, 39, 67));
-  background: linear-gradient(180deg, rgb(32, 88, 145), rgb(8, 39, 67));
+  background: -webkit-linear-gradient(180deg, rgb(28, 78, 128), rgb(8, 39, 67));
+  background: linear-gradient(180deg, rgb(28, 78, 128), rgb(8, 39, 67));
   border: 2px solid $white;
   border-radius: 5px;
   z-index: 99;
