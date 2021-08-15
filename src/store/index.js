@@ -14,6 +14,7 @@ export default createStore({
     activeInvoice: null,
     editInvoice: null,
     itemDatabase: itemDatabase(),
+    uniqueId: 82519,
   },
   getters: {
     getInvoicesFiltered(state, getters) {
@@ -131,6 +132,10 @@ export default createStore({
     },
     getItemDatabase(state) {
       return state.itemDatabase;
+    },
+    getUniqueId(state) {
+      state.uniqueId += 1;
+      return state.uniqueId;
     },
   },
   mutations: {

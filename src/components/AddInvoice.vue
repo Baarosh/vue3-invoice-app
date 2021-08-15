@@ -283,28 +283,22 @@ export default {
     };
   },
   watch: {
-    paymentTerms(value) {
-      if (this.invoiceDate) {
-        const date = moment(this.invoiceDate);
-        if (value === 'Payment30') {
-          date.add(30, 'days');
-          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
-        } else if (value === 'Payment60') {
-          date.add(60, 'days');
-          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
-        } else {
-          this.invoice.paymentDueDate.value = null;
-          this.invoice.paymentDueDate.valid = null;
-        }
-      }
+    paymentTerms() {
+      // if (this.invoiceDate) {
+      //   const date = moment(this.invoiceDate);
+      //   if (value === 'Payment30') {
+      //     date.add(30, 'days');
+      //     this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+      //   } else if (value === 'Payment60') {
+      //     date.add(60, 'days');
+      //     this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+      //   } else {
+      //     this.invoice.paymentDueDate.value = null;
+      //   }
+      // }
     },
     invoiceDate() {
-      if (this.paymentTerms === 'Terms' && !this.getEditInvoice) {
-        this.invoice.paymentTerms.valid = null;
-      } else {
-        this.invoice.paymentTerms.valid = null;
-        this.invoice.paymentTerms.value = 'Terms';
-      }
+      // this.invoice.paymentDueDate.value = null;
     },
     invoiceItemList: {
       handler() {
@@ -327,7 +321,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getDialog', 'getEditInvoice', 'getItemDatabase']),
+    ...mapGetters(['getDialog', 'getEditInvoice', 'getItemDatabase', 'getUniqueId']),
     paymentTerms() {
       if (this.invoice) {
         return this.invoice.paymentTerms.value;
@@ -366,10 +360,8 @@ export default {
         invoiceStatus: this.getEditInvoice.invoiceStatus,
       };
     } else {
-      const id = this.currentId;
-      this.currentId += 1;
       this.invoice = {
-        invoiceId: { value: id, valid: null },
+        invoiceId: { value: this.getUniqueId, valid: null },
         invoiceDate: { value: null, valid: null },
         clientName: { value: null, valid: null },
         clientEmail: { value: null, valid: null },
@@ -485,7 +477,6 @@ export default {
           break;
         }
         case 'paymentTerms': {
-          console.log(this.invoice.paymentDueDate.value);
           if (this.invoice.paymentTerms.value !== 'Terms') {
             this.invoice.paymentTerms.valid = 1;
           } else {
