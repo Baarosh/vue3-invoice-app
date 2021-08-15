@@ -163,7 +163,10 @@
                   'addinvoice__item-qty_valid-value': item.itemQuantity.valid === 1,
                   'addinvoice__item-qty_invalid-value': item.itemQuantity.valid === 0,
                 }"
-                v-model="item.itemQuantity.value"
+                v-model.number="item.itemQuantity.value"
+                step="1"
+                min="0"
+                max="20"
                 @input="validateAttribute('invoiceItemList')"
               />
 
@@ -172,15 +175,15 @@
                 type="number"
                 :id="`addinvoice__unitPrice${item.itemId.value}`"
                 disabled
-                v-model="item.unitPrice.value"
+                v-model.number="item.unitPrice.value"
               />
 
               <label for="addinvoice__itemTotal">Item Total</label>
               <input
-                type="text"
+                type="number"
                 :id="`addinvoice__itemTotal${item.itemId.value}`"
                 disabled
-                v-model="item.itemTotal.value"
+                v-model.number="item.itemTotal.value"
               />
             </div>
           </transition-group>
@@ -220,7 +223,13 @@
         </div>
         <div class="addinvoice__invoiceTotal_container flex row a-center j-end">
           <label for="addinvoice__invoiceTotal">Invoice Total</label>
-          <input type="number" id="addinvoice__invoiceTotal" v-model="invoice.invoiceTotal.value" disabled />
+          <input
+            type="number"
+            id="addinvoice__invoiceTotal"
+            v-model.number="invoice.invoiceTotal.value"
+            step="0.01"
+            disabled
+          />
         </div>
         <div class="addinvoice__buttons flex row a-center j-end">
           <button type="button" class="addinvoice__button_item addinvoice__button_item-cancel" @click="toggleModal">
@@ -296,15 +305,17 @@ export default {
       handler() {
         if (this.invoice) {
           for (let i = 0; i < this.invoiceItemList.length; i += 1) {
-            const { name } = this.invoiceItemList[i];
+            const { itemName } = this.invoiceItemList[i];
             const db = this.getItemDatabase;
-
-            const itemIndex = db.findIndex((p) => p.name === name);
-            // DOKONCZYC
+            const itemIndex = db.findIndex((p) => p.name === itemName.value);
             if (itemIndex !== -1) {
-              this.invoiceItemList[i].unitPrice = db[itemIndex].price;
+              this.invoiceItemList[i].unitPrice.value = db[itemIndex].price;
+              this.invoiceItemList[i].itemTotal.value = parseFloat(
+                (this.invoiceItemList[i].unitPrice.value * this.invoiceItemList[i].itemQuantity.value).toFixed(2)
+              );
             }
           }
+          this.calculateInvoiceTotal();
         }
       },
       deep: true,
@@ -391,6 +402,13 @@ export default {
       if (event.target === this.$refs.wrapper) {
         this.toggleDialog();
       }
+    },
+    calculateInvoiceTotal() {
+      let sum = 0;
+      for (let i = 0; i < this.invoice.invoiceItemList.length; i += 1) {
+        sum += this.invoice.invoiceItemList[i].itemTotal.value;
+      }
+      this.invoice.invoiceTotal.value = parseFloat(sum.toFixed(2));
     },
     leaveInvoice() {
       this.toggleDialog();

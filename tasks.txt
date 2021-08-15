@@ -2,7 +2,7 @@
 
 DONE 1. Validation of invoice attributes.
 DONE 2. Calculate payment due date.
-2. Calculate item total
-3. Calculate invoice total.
-4. Display invoice details.
-5. Enable editing existing invoice.
+DONE 3. Calculate item total
+DONE 4. Calculate invoice total.
+5. Display invoice details.
+6. Enable editing existing invoice.
