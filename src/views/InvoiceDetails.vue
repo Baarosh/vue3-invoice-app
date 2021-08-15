@@ -2,56 +2,92 @@
   <section class="invoicedetails flex column a-start j-start">
     <div class="invoicedetails__left">
       <h3>
-        Invoice <span>#{{ ACTIVE_INVOICE.invoiceId }}</span>
+        Invoice <span>#{{ getActiveInvoice.invoiceId.value }}</span>
       </h3>
       <h4>
-        Status: {{ ACTIVE_INVOICE.status }}
+        Status: {{ getActiveInvoice.invoiceStatus.value }}
         <span
           class="invoicedetails__left_status-dot1"
           :class="{
-            orange: ACTIVE_INVOICE.status === 'Pending',
-            green: ACTIVE_INVOICE.status === 'Paid',
-            gray: ACTIVE_INVOICE.status === 'Draft',
+            orange: getActiveInvoice.invoiceStatus.value === 'Pending',
+            green: getActiveInvoice.invoiceStatus.value === 'Paid',
+            gray: getActiveInvoice.invoiceStatus.value === 'Draft',
           }"
         ></span>
       </h4>
-      <h4>{{ ACTIVE_INVOICE.date }}</h4>
-      <h4>{{ ACTIVE_INVOICE.country }}</h4>
-      <h4>{{ ACTIVE_INVOICE.zipCode }}</h4>
+      <p>Invoice Date: {{ getActiveInvoice.invoiceDate.value }}</p>
+      <p>{{ getActiveInvoice.clientName.value }}</p>
+      <p>{{ getActiveInvoice.clientEmail.value }}</p>
+      <p>{{ getActiveInvoice.clientStreetAddress.value }}</p>
+      <p>{{ getActiveInvoice.clientCity.value }}</p>
+      <p>{{ getActiveInvoice.clientCountry.value }}</p>
+      <p>{{ getActiveInvoice.clientZipCode.value }}</p>
+      <p>Payment Due Date: {{ getActiveInvoice.paymentDueDate.value }}</p>
+      <p>Notes: {{ getActiveInvoice.clientNote.value }}</p>
     </div>
     <div class="invoicedetails__right">
-      <button type="button" class="invoicedetails__right_btn invoicedetails__right_btn-modify">Modify</button>
-      <button
-        type="button"
-        class="invoicedetails__right_btn invoicedetails__right_btn-back"
-        @click="$router.push({ name: 'Home' })"
-      >
-        Back
-      </button>
+      <div class="invoicedetails__right_items">
+        <ul>
+          <li class="invoicedetails__right_items-header">
+            <p>Item Name</p>
+            <p>Quantity</p>
+            <p>Unit Price</p>
+            <p>Item Total</p>
+          </li>
+          <li v-for="item in getActiveInvoice.invoiceItemList" :key="item.itemId.value">
+            <p>{{ item.itemName.value }}</p>
+            <p>{{ item.itemQuantity.value }}</p>
+            <p>${{ item.unitPrice.value }}</p>
+            <p>${{ item.itemTotal.value }}</p>
+          </li>
+          <li class="invoicedetails__right_items-footer">
+            <p>Invoice Total</p>
+            <p>${{ getActiveInvoice.invoiceTotal.value }}</p>
+          </li>
+        </ul>
+      </div>
+      <div class="invoicedetails__right_buttons">
+        <button type="button" class="invoicedetails__right_btn invoicedetails__right_btn-modify" @click="modifyInvoice">
+          Modify
+        </button>
+        <button
+          type="button"
+          class="invoicedetails__right_btn invoicedetails__right_btn-back"
+          @click="$router.push({ name: 'Home' })"
+        >
+          Save & Back
+        </button>
+      </div>
     </div>
     <button
-      v-if="ACTIVE_INVOICE.status === 'Pending'"
+      v-if="getActiveInvoice.invoiceStatus.value === 'Pending'"
       type="button"
       class="invoicedetails__right_btn invoicedetails__right_btn-pending"
+      @click="setInvoiceStatus('Paid')"
     >
       Set as paid
       <span
         class="invoicedetails__left_status-dot2"
         :class="{
-          orange: ACTIVE_INVOICE.status === 'Paid',
-          green: ACTIVE_INVOICE.status === 'Pending',
-          gray: ACTIVE_INVOICE.status === 'Draft',
+          orange: getActiveInvoice.invoiceStatus.value === 'Paid',
+          green: getActiveInvoice.invoiceStatus.value === 'Pending',
+          gray: getActiveInvoice.invoiceStatus.value === 'Draft',
         }"
       ></span>
     </button>
-    <button v-else type="button" class="invoicedetails__right_btn invoicedetails__right_btn-paid">
+    <button
+      v-else
+      type="button"
+      class="invoicedetails__right_btn invoicedetails__right_btn-paid"
+      @click="setInvoiceStatus('Pending')"
+    >
       Set as pending
       <span
         class="invoicedetails__left_status-dot2"
         :class="{
-          orange: ACTIVE_INVOICE.status === 'Paid',
-          green: ACTIVE_INVOICE.status === 'Pending',
-          gray: ACTIVE_INVOICE.status === 'Draft',
+          orange: getActiveInvoice.invoiceStatus.value === 'Paid',
+          green: getActiveInvoice.invoiceStatus.value === 'Pending',
+          gray: getActiveInvoice.invoiceStatus.value === 'Draft',
         }"
       ></span>
     </button>
@@ -59,18 +95,21 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'InvoiceDetails',
   data() {
     return {};
   },
   computed: {
-    ACTIVE_INVOICE() {
-      return this.$store.getters.ACTIVE_INVOICE;
-    },
+    ...mapGetters(['getActiveInvoice']),
+  },
+  methods: {
+    ...mapActions(['setActiveInvoice', 'setInvoiceStatus', 'modifyInvoice']),
   },
   created() {
-    this.$store.dispatch('GET_INVOICE', this.$route.params.id);
+    this.setActiveInvoice(this.$route.params.id);
   },
 };
 </script>
@@ -88,8 +127,10 @@ export default {
   border: 2px solid $white;
   border-radius: 5px;
   position: relative;
+  flex-flow: row;
+
   h3 {
-    margin: 40px 0px 70px 50px;
+    margin: 40px 0px 40px 30px;
     color: $white;
     font-size: 32px;
 
@@ -99,26 +140,65 @@ export default {
     }
   }
 
-  h4:first-of-type {
-    margin: 0px 0px 50px 50px;
-  }
-
   h4 {
-    margin: 0px 0px 15px 50px;
+    margin: 0px 0px 20px 30px;
     font-size: 24px;
     color: $white;
     font-weight: normal;
     position: relative;
     width: fit-content;
   }
+
+  p {
+    margin: 0px 0px 10px 30px;
+    font-size: 18px;
+    color: $white;
+    font-weight: 300;
+    position: relative;
+    width: fit-content;
+    letter-spacing: 0.5px;
+  }
+
+  .invoicedetails__left {
+    flex: 1;
+  }
+
   .invoicedetails__right {
-    align-self: flex-end;
-    margin-top: 230px;
-    width: 400px;
+    flex: 1;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
-    align-items: center;
+    margin-top: 120px;
+    flex-flow: column nowrap;
+
+    .invoicedetails__right_items {
+      ul {
+        list-style-type: none;
+
+        li {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: flex-start;
+
+          p {
+            width: 120px;
+          }
+        }
+      }
+      .invoicedetails__right_items-header {
+        p {
+          font-weight: normal;
+        }
+      }
+      .invoicedetails__right_items-footer {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid $gray;
+        padding-top: 5px;
+        p {
+          font-weight: normal;
+        }
+      }
+    }
 
     .invoicedetails__right_btn {
       border: none;
@@ -133,17 +213,27 @@ export default {
       white-space: nowrap;
     }
 
-    .invoicedetails__right_btn-back {
-      background-color: $dark-gray;
-      margin-right: 10px;
-      &:hover {
-        background-color: $dark-gray-hover;
+    .invoicedetails__right_buttons {
+      width: 600px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-evenly;
+      align-items: center;
+      position: absolute;
+      bottom: 20px;
+      .invoicedetails__right_btn-back {
+        background-color: $dark-gray;
+        width: 200px;
+        &:hover {
+          background-color: $dark-gray-hover;
+        }
       }
-    }
-    .invoicedetails__right_btn-modify {
-      background-color: $blue;
-      &:hover {
-        background-color: $blue-hover;
+      .invoicedetails__right_btn-modify {
+        background-color: $blue;
+        width: 200px;
+        &:hover {
+          background-color: $blue-hover;
+        }
       }
     }
   }

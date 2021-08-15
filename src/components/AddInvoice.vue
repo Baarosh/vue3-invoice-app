@@ -133,6 +133,7 @@
           <label for="addinvoice__paymentDueDate">Payment Due Date</label>
           <input type="date" id="addinvoice__paymentDueDate" v-model="invoice.paymentDueDate.value" disabled />
         </div>
+
         <div v-if="invoice.invoiceItemList.length > 0" class="addinvoice__items_container">
           <h3>Products</h3>
           <transition-group name="addinvoice__items">
@@ -278,6 +279,7 @@ export default {
     return {
       invoice: null,
       grayBackground: false,
+      currentId: 85129,
     };
   },
   watch: {
@@ -290,11 +292,14 @@ export default {
         } else if (value === 'Payment60') {
           date.add(60, 'days');
           this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
-        } else this.invoice.paymentDueDate.value = null;
+        } else {
+          this.invoice.paymentDueDate.value = null;
+          this.invoice.paymentDueDate.valid = null;
+        }
       }
     },
     invoiceDate() {
-      if (this.paymentTerms === 'Terms') {
+      if (this.paymentTerms === 'Terms' && !this.getEditInvoice) {
         this.invoice.paymentTerms.valid = null;
       } else {
         this.invoice.paymentTerms.valid = null;
@@ -345,32 +350,26 @@ export default {
   created() {
     if (this.getEditInvoice) {
       this.invoice = {
-        invoiceId: { value: 0, valid: null },
-        invoiceDate: { value: null, valid: null },
-        clientName: { value: null, valid: null },
-        clientEmail: { value: null, valid: null },
-        clientStreetAddress: { value: null, valid: null },
-        clientCity: { value: null, valid: null },
-        clientZipCode: { value: null, valid: null },
-        clientCountry: { value: null, valid: null },
-        clientNote: { value: null, valid: null },
-        paymentTerms: { value: null, valid: null },
-        paymentDueDate: { value: null, valid: null },
-        invoiceItemList: [
-          {
-            itemId: { value: 0, valid: null },
-            itemName: { value: 'Item', valid: null },
-            itemQuantity: { value: 0, valid: null },
-            unitPrice: { value: 0, valid: null },
-            itemTotal: { value: 0, valid: null },
-          },
-        ],
-        invoiceTotal: { value: 0, valid: null },
-        invoiceStatus: { value: null, valid: null },
+        invoiceId: this.getEditInvoice.invoiceId,
+        invoiceDate: this.getEditInvoice.invoiceDate,
+        clientName: this.getEditInvoice.clientName,
+        clientEmail: this.getEditInvoice.clientEmail,
+        clientStreetAddress: this.getEditInvoice.clientStreetAddress,
+        clientCity: this.getEditInvoice.clientCity,
+        clientZipCode: this.getEditInvoice.clientZipCode,
+        clientCountry: this.getEditInvoice.clientCountry,
+        clientNote: this.getEditInvoice.clientNote,
+        paymentTerms: this.getEditInvoice.paymentTerms,
+        paymentDueDate: this.getEditInvoice.paymentDueDate,
+        invoiceItemList: this.getEditInvoice.invoiceItemList,
+        invoiceTotal: this.getEditInvoice.invoiceTotal,
+        invoiceStatus: this.getEditInvoice.invoiceStatus,
       };
     } else {
+      const id = this.currentId;
+      this.currentId += 1;
       this.invoice = {
-        invoiceId: { value: 0, valid: null },
+        invoiceId: { value: id, valid: null },
         invoiceDate: { value: null, valid: null },
         clientName: { value: null, valid: null },
         clientEmail: { value: null, valid: null },
@@ -396,7 +395,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleModal', 'toggleDialog', 'addInvoice']),
+    ...mapActions(['toggleModal', 'toggleDialog', 'addInvoice', 'unsetActiveInvoice']),
 
     toggleDialogByOutClick(event) {
       if (event.target === this.$refs.wrapper) {
@@ -416,8 +415,8 @@ export default {
     },
     addNewItem() {
       this.invoice.invoiceItemList.push({
-        itemId: { value: 0, valid: null },
-        itemName: { value: '', valid: null },
+        itemId: { value: this.invoice.invoiceItemList.length + 1, valid: null },
+        itemName: { value: 'Item', valid: null },
         itemQuantity: { value: 0, valid: null },
         unitPrice: { value: 0, valid: null },
         itemTotal: { value: 0, valid: null },
@@ -425,24 +424,27 @@ export default {
     },
     createInvoice(status) {
       if (this.validateInvoice()) {
-        this.addInvoice({
-          invoiceId: this.invoice.invoiceId.value,
-          invoiceDate: this.invoice.invoiceDate.value,
-          clientName: this.invoice.clientName.value,
-          clientEmail: this.invoice.clientEmail.value,
-          clientStreetAddress: this.invoice.clientStreetAddress.value,
-          clientCity: this.invoice.clientCity.value,
-          clientZipCode: this.invoice.clientZipCode.value,
-          clientCountry: this.invoice.clientCountry.value,
-          clientNote: this.invoice.clientNote.value,
-          paymentTerms: this.invoice.paymentTerms.value,
-          paymentDueDate: this.invoice.paymentDueDate.value,
-          invoiceItemList: this.invoice.invoiceItemList,
-          invoiceTotal: this.invoice.invoiceTotal.value,
-          invoiceStatus: status,
-        });
-        this.toggleModal();
+        if (!this.getEditInvoice) {
+          this.addInvoice({
+            invoiceId: this.invoice.invoiceId,
+            invoiceDate: this.invoice.invoiceDate,
+            clientName: this.invoice.clientName,
+            clientEmail: this.invoice.clientEmail,
+            clientStreetAddress: this.invoice.clientStreetAddress,
+            clientCity: this.invoice.clientCity,
+            clientZipCode: this.invoice.clientZipCode,
+            clientCountry: this.invoice.clientCountry,
+            clientNote: this.invoice.clientNote,
+            paymentTerms: this.invoice.paymentTerms,
+            paymentDueDate: this.invoice.paymentDueDate,
+            invoiceItemList: this.invoice.invoiceItemList,
+            invoiceTotal: this.invoice.invoiceTotal,
+            invoiceStatus: { value: status, valid: 1 },
+          });
+        } else this.invoice.invoiceStatus.value = status;
       }
+      this.toggleModal();
+      this.unsetActiveInvoice();
     },
     validateAttribute(attribute) {
       switch (attribute) {
@@ -483,6 +485,7 @@ export default {
           break;
         }
         case 'paymentTerms': {
+          console.log(this.invoice.paymentDueDate.value);
           if (this.invoice.paymentTerms.value !== 'Terms') {
             this.invoice.paymentTerms.valid = 1;
           } else {
@@ -494,14 +497,15 @@ export default {
           if (this.invoice.invoiceItemList.length) {
             for (let i = 0; i < this.invoice.invoiceItemList.length; i += 1) {
               if (
-                this.invoice.invoiceItemList[i].itemName.value.length &&
-                this.invoice.invoiceItemList[i].itemName.value.length > 2
+                this.invoice.invoiceItemList[i].itemName.value &&
+                this.invoice.invoiceItemList[i].itemName.value !== 'Item'
               ) {
                 this.invoice.invoiceItemList[i].itemName.valid = 1;
               } else this.invoice.invoiceItemList[i].itemName.valid = 0;
               if (
                 this.invoice.invoiceItemList[i].itemQuantity.value &&
-                this.invoice.invoiceItemList[i].itemQuantity.value > 0
+                this.invoice.invoiceItemList[i].itemQuantity.value > 0 &&
+                Number.isInteger(this.invoice.invoiceItemList[i].itemQuantity.value)
               ) {
                 this.invoice.invoiceItemList[i].itemQuantity.valid = 1;
               } else this.invoice.invoiceItemList[i].itemQuantity.valid = 0;
