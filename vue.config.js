@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/vue3-invoice-app/' : '/',
+  publicPath: '/vue3-invoice-app/',
 };
