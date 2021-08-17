@@ -10,3 +10,5 @@ DONE 7. Fix validation of new invoice.
 DONE 8. Fix invoice ids.
 DONE 9. Fix payment due date.
 DONE 10. Style no invoices state.
+
+git subtree push --prefix dist origin gh-pages
