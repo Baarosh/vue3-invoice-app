@@ -247,11 +247,10 @@
         </p>
       </li>
     </ul>
-    <div v-else>
-      NO INVOICES
+    <div v-else class="noinvoice flex column a-center j-center">
       <svg
         @click="toggleModal"
-        class="invoicelist-addinvoice__svg"
+        class="noinvoice-addinvoice__svg"
         width="29"
         height="28"
         viewBox="0 0 29 28"
@@ -335,6 +334,7 @@ export default {
   width: 75%;
   height: 580px;
 
+
   ul {
     padding-top: 10px;
     padding-right: 10px;
@@ -363,6 +363,7 @@ export default {
         margin-left: 50px;
         color: $white;
         font-size: 16px;
+
       }
 
       p:first-child {
@@ -474,6 +475,25 @@ export default {
       .invoicelist__header_sorticon_svg {
         width: auto;
         height: 100%;
+      }
+    }
+  }
+}
+
+.noinvoice {
+  width: 100%;
+
+  .noinvoice-addinvoice__svg {
+    width: 80px;
+    height: auto;
+    #a0 path {
+      transition: fill 0.2s ease-out;
+    }
+
+    &:hover {
+      cursor: pointer;
+      #a0 path {
+        fill: $green-hover;
       }
     }
   }

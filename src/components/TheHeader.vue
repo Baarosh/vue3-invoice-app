@@ -55,6 +55,10 @@ export default {
       width: auto;
       transform: rotate(20deg);
       margin-left: 20px;
+
+      @media (max-width: 768px) {
+        height: 50px;
+      }
     }
 
     h1 {
@@ -63,12 +67,20 @@ export default {
       font-size: 45px;
       font-weight: bold;
       color: $white;
+
+      @media (max-width: 768px) {
+        font-size: 22px;
+      }
     }
 
     .header__left_svg {
       position: absolute;
       top: 85px;
       left: 320px;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
     }
   }
 
@@ -83,6 +95,10 @@ export default {
       font-weight: bold;
       color: $white;
       cursor: pointer;
+
+      @media (max-width: 768px) {
+        font-size: 16px;
+      }
     }
   }
 }

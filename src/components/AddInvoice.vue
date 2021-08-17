@@ -280,25 +280,33 @@ export default {
       invoice: null,
       grayBackground: false,
       currentId: 85129,
+      test: 'aaa',
     };
   },
   watch: {
-    paymentTerms() {
-      // if (this.invoiceDate) {
-      //   const date = moment(this.invoiceDate);
-      //   if (value === 'Payment30') {
-      //     date.add(30, 'days');
-      //     this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
-      //   } else if (value === 'Payment60') {
-      //     date.add(60, 'days');
-      //     this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
-      //   } else {
-      //     this.invoice.paymentDueDate.value = null;
-      //   }
-      // }
+    test() {
+      console.log('watcher saw it!');
+    },
+    paymentTerms(value) {
+      if (this.invoice.invoiceDate.value) {
+        const date = moment(this.invoice.invoiceDate.value);
+        if (value === 'Payment30') {
+          date.add(30, 'days');
+          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+        } else if (value === 'Payment60') {
+          date.add(60, 'days');
+          this.invoice.paymentDueDate.value = date.format('YYYY-MM-DD');
+        } else {
+          this.invoice.paymentDueDate.value = null;
+        }
+      } else this.invoice.paymentDueDate.value = null;
     },
     invoiceDate() {
-      // this.invoice.paymentDueDate.value = null;
+      if (this.invoiceDateReady) {
+        this.invoice.paymentDueDate.value = null;
+        this.invoice.paymentTerms.value = 'Terms';
+        this.invoice.paymentTerms.valid = null;
+      }
     },
     invoiceItemList: {
       handler() {
@@ -385,6 +393,7 @@ export default {
         invoiceStatus: { value: null, valid: null },
       };
     }
+    this.invoiceDateReady = true;
   },
   methods: {
     ...mapActions(['toggleModal', 'toggleDialog', 'addInvoice', 'unsetActiveInvoice']),
@@ -434,9 +443,9 @@ export default {
             invoiceStatus: { value: status, valid: 1 },
           });
         } else this.invoice.invoiceStatus.value = status;
+        this.toggleModal();
+        this.unsetActiveInvoice();
       }
-      this.toggleModal();
-      this.unsetActiveInvoice();
     },
     validateAttribute(attribute) {
       switch (attribute) {
@@ -522,6 +531,16 @@ export default {
 
       const validItems = this.invoice.invoiceItemList.every((item) => item.itemName.valid && item.itemQuantity.valid);
 
+      // console.log(this.invoice.invoiceDate, this.invoice.invoiceDate.valid);
+      // console.log(this.invoice.clientEmail, this.invoice.clientEmail.valid);
+      // console.log(this.invoice.clientName, this.invoice.clientName.valid);
+      // console.log(this.invoice.clientStreetAddress, this.invoice.clientStreetAddress.valid);
+      // console.log(this.invoice.clientCity, this.invoice.clientCity.valid);
+      // console.log(this.invoice.clientZipCode, this.invoice.clientZipCode.valid);
+      // console.log(this.invoice.clientCountry, this.invoice.clientCountry.valid);
+      // console.log(this.invoice.paymentTerms, this.invoice.paymentTerms.valid);
+      // console.log(this.invoice.invoiceItemList, validItems);
+
       return (
         this.invoice.invoiceDate.valid &&
         this.invoice.clientEmail.valid &&
@@ -531,7 +550,6 @@ export default {
         this.invoice.clientZipCode.valid &&
         this.invoice.clientCountry.valid &&
         this.invoice.paymentTerms.valid &&
-        this.invoice.clientCountry.valid &&
         validItems
       );
     },
@@ -588,6 +606,7 @@ export default {
     border: 1px solid $dark-blue;
     -webkit-text-fill-color: $white;
     -webkit-box-shadow: 0 0 0px 10000px $blue inset;
+    box-shadow: 0 0 0px 10000px $blue inset;
   }
 
   form {

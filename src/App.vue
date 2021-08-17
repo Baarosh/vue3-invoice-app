@@ -1,6 +1,9 @@
 <template>
   <the-header></the-header>
-  <router-view></router-view>
+  <router-view v-if="!mobile"></router-view>
+  <div v-else class="nomobile">
+    <h2 class="nomobile__title">Sorry, this application is designed only for desktop devices.</h2>
+  </div>
   <transition name="modal">
     <add-invoice v-if="getModal"></add-invoice>
   </transition>
@@ -13,6 +16,20 @@ import AddInvoice from './components/AddInvoice.vue';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      mobile: false,
+    };
+  },
+  created() {
+    const self = this;
+    window.addEventListener('resize', () => {
+      const width = window.innerWidth;
+      if (width < 1322) {
+        self.mobile = true;
+      } else self.mobile = false;
+    });
+  },
   components: {
     TheHeader,
     AddInvoice,
@@ -64,5 +81,23 @@ export default {
 .modal-enter-to,
 .modal-leave-from {
   transform: translateX(0px);
+}
+
+.nomobile {
+  height: 500px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h2 {
+    font-size: 28px;
+    color: $white;
+    margin: 15px;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
 }
 </style>

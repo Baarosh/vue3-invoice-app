@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import moment from 'moment';
 import itemDatabase from './dict';
 import router from '../router/index';
 
@@ -43,10 +44,9 @@ export default createStore({
           });
         }
         if (state.sortingAttribute === 'date') {
-          // ZROBIC POPRAWNIE
           return state.invoices.sort((a, b) => {
-            if (a.invoiceDate.value < b.invoiceDate.value) return -1;
-            if (a.invoiceDate.value > b.invoiceDate.value) return 1;
+            if (moment(a.invoiceDate.value) < moment(b.invoiceDate.value)) return -1;
+            if (moment(a.invoiceDate.value) > moment(b.invoiceDate.value)) return 1;
             return 0;
           });
         }
@@ -85,10 +85,9 @@ export default createStore({
         });
       }
       if (state.sortingAttribute === 'date') {
-        // ZROBIC POPRAWNIE
         return state.invoices.sort((a, b) => {
-          if (a.invoiceDate.value < b.invoiceDate.value) return 1;
-          if (a.invoiceDate.value > b.invoiceDate.value) return -1;
+          if (moment(a.invoiceDate.value) < moment(b.invoiceDate.value)) return 1;
+          if (moment(a.invoiceDate.value) > moment(b.invoiceDate.value)) return -1;
           return 0;
         });
       }
